@@ -104,9 +104,7 @@ fun AppNavigation() {
             )
         }
 
-        composable("piano") {
-            com.example.myapplication.screens.workspace.tools.PianoScreen()
-        }
+
 
         composable("save") {
             SaveProjectScreen(
