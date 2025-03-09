@@ -63,16 +63,16 @@ fun AudioContent() {
                 )
                 {
                     IconButton(
-                        onClick = { /* Xử lý sự kiện khi nhấn vào dấu cộng */ },
+                        onClick = { },
                         modifier = Modifier.width(60.dp)
 
                     ) {
                         Icon(
-                            imageVector = Icons.Filled.Add, // Dấu cộng
+                            imageVector = Icons.Filled.Add,
                             contentDescription = "Add",
                             modifier = Modifier
-                                .size(24.dp), // Điều chỉnh kích thước của Icon // Căn giữa Icon theo chiều dọc
-                            tint = Color.White // Màu trắng cho icon
+                                .size(24.dp),
+                            tint = Color.White
                         )
                     }
                 }
@@ -82,13 +82,13 @@ fun AudioContent() {
                 .width(2.dp)
                 .fillMaxHeight()
                 .background(Color.Red))
-            // Hiển thị đoạn nhạc & Biên độ âm thanh
+
 
             Box(modifier = Modifier.weight(1f)) {
                 AudioTracksDisplay(tracks.size)
             }
 
-            // Trục hiển thị mốc thời gian hiện tại (đường thẳng đứng)
+
 
         }
     }
@@ -167,7 +167,6 @@ fun AudioTracksDisplay(trackCount: Int) {
                     .fillMaxWidth()
                     .height(58.dp)
                     .background(Color(0xFF1E1E1E), RoundedCornerShape(8.dp))
-
 
 
             ) {

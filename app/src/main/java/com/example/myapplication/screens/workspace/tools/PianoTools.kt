@@ -1,6 +1,8 @@
 package com.example.myapplication.screens.workspace.tools
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -14,77 +16,81 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
+import androidx.compose.ui.unit.sp
+
 @Composable
-fun PianoScreen() {
-    Box(modifier = Modifier
-        .fillMaxSize()
-        .padding(16.dp))
-    {
-        IconButton(
-            onClick = { } ,
-            modifier = Modifier
-                .align(Alignment.TopStart)
-                .padding(top = 16.dp)
-        ) {
-            Icon(
-                imageVector = Icons.Default.ArrowBack,
-                contentDescription = "Back to Login",
-                tint = MaterialTheme.colorScheme.primary
-            )
-        }
+fun PianoTool() {
+
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .background(Color(0xFF333333)) // Màu nền tối
+                .background(Color(0xFF1E1E1E)) // Màu nền tối
                 .padding(16.dp),
-            verticalArrangement = Arrangement.Bottom
-        ) {
-            // Hàng phím đàn piano
+            horizontalAlignment = Alignment.CenterHorizontally
+        )
+        {
+            Text(
+                text = "Piano",
+                fontSize = 24.sp,
+
+                color = Color.White,
+                modifier = Modifier.padding(bottom = 16.dp)
+            )
+
+            // Hàng phím đàn
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(200.dp),
-                horizontalArrangement = Arrangement.SpaceBetween
+                horizontalArrangement = Arrangement.SpaceEvenly
             ) {
                 // Phím trắng
-                PianoKey(isBlackKey = false, modifier = Modifier.weight(1f))
-                PianoKey(isBlackKey = false, modifier = Modifier.weight(1f))
-                PianoKey(isBlackKey = false, modifier = Modifier.weight(1f))
-                PianoKey(isBlackKey = false, modifier = Modifier.weight(1f))
-                PianoKey(isBlackKey = false, modifier = Modifier.weight(1f))
-                PianoKey(isBlackKey = false, modifier = Modifier.weight(1f))
-                PianoKey(isBlackKey = false, modifier = Modifier.weight(1f))
+                PianoKey(color = Color.White, note = "C")
+                PianoKey(color = Color.White, note = "D")
+                PianoKey(color = Color.White, note = "E")
+                PianoKey(color = Color.White, note = "F")
+                PianoKey(color = Color.White, note = "G")
+                PianoKey(color = Color.White, note = "A")
+                PianoKey(color = Color.White, note = "B")
             }
 
-            // Hàng phím đen (đặt chồng lên phím trắng)
+            // Hàng phím đen
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(120.dp)
-                    .padding(horizontal = 24.dp), // Căn chỉnh vị trí phím đen
+                    .padding(horizontal = 32.dp),
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                // Phím đen (bỏ qua vị trí đầu tiên)
-                Spacer(modifier = Modifier.weight(1f))
-                PianoKey(isBlackKey = true, modifier = Modifier.weight(1f))
-                PianoKey(isBlackKey = true, modifier = Modifier.weight(1f))
-                Spacer(modifier = Modifier.weight(1f))
-                PianoKey(isBlackKey = true, modifier = Modifier.weight(1f))
-                PianoKey(isBlackKey = true, modifier = Modifier.weight(1f))
-                PianoKey(isBlackKey = true, modifier = Modifier.weight(1f))
+                // Phím đen
+                PianoKey(color = Color.Black, note = "C#", modifier = Modifier.width(40.dp))
+                PianoKey(color = Color.Black, note = "D#", modifier = Modifier.width(40.dp))
+                Spacer(modifier = Modifier.width(80.dp)) // Khoảng trống giữa các phím đen
+                PianoKey(color = Color.Black, note = "F#", modifier = Modifier.width(40.dp))
+                PianoKey(color = Color.Black, note = "G#", modifier = Modifier.width(40.dp))
+                PianoKey(color = Color.Black, note = "A#", modifier = Modifier.width(40.dp))
             }
         }
-    }
+
 }
 
 @Composable
-fun PianoKey(isBlackKey: Boolean, modifier: Modifier = Modifier) {
+fun PianoKey(color: Color, note: String, modifier: Modifier = Modifier) {
     Box(
         modifier = modifier
-            .height(if (isBlackKey) 120.dp else 200.dp)
-            .background(
-                color = if (isBlackKey) Color.Black else Color.White,
-                shape = RoundedCornerShape(bottomStart = 8.dp, bottomEnd = 8.dp)
-            )
-    )
+            .height(if (color == Color.White) 200.dp else 120.dp)
+            .background(color, shape = RoundedCornerShape(4.dp))
+            .clickable { println("Key $note pressed") }, // Xử lý khi nhấn phím
+        contentAlignment = Alignment.BottomCenter
+    ) {
+        Text(
+            text = note,
+            fontSize = 14.sp,
+
+            color = if (color == Color.White) Color.Black else Color.White,
+            modifier = Modifier.padding(bottom = 8.dp)
+        )
+    }
 }
