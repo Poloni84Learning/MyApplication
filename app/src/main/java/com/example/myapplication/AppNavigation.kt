@@ -11,6 +11,7 @@ import com.example.myapplication.screens.loginandregister.NewPasswordScreen
 import com.example.myapplication.screens.loginandregister.RegisterScreen
 import com.example.myapplication.screens.loginandregister.VerificationCodeScreen
 import com.example.myapplication.screens.workspace.ProjectScreen
+import com.example.myapplication.screens.workspace.SaveProjectScreen
 import com.example.myapplication.screens.workspace.WorkSpaceScreen
 
 @Composable
@@ -96,8 +97,24 @@ fun AppNavigation() {
         }
 
         composable("workspace") {
-            WorkSpaceScreen()
-    }
+            WorkSpaceScreen(
+                onNavigateSave = {
+                    navController.navigate("save")
+                }
+            )
+        }
+
+        composable("piano") {
+            com.example.myapplication.screens.workspace.tools.PianoScreen()
+        }
+
+        composable("save") {
+            SaveProjectScreen(
+                onNavigateBack = {
+                    navController.popBackStack()
+                }
+            )
+        }
     }
 }
 

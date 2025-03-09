@@ -13,6 +13,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.foundation.Canvas
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.Stop
 import androidx.compose.material.icons.filled.Mic
@@ -29,7 +30,22 @@ fun AudioRecorderTool() {
     var isPlaying by remember { mutableStateOf(false) }
     var recordingTime by remember { mutableStateOf(0) } // Thời gian ghi âm (giây)
     val waveformData = remember { generateWaveformData() } // Dữ liệu waveform giả lập
-
+    Box(modifier = Modifier
+        .fillMaxSize()
+        .padding(16.dp))
+    {
+        IconButton(
+            onClick = {},
+            modifier = Modifier
+                .align(Alignment.TopStart)
+                .padding(top = 16.dp)
+        ) {
+            Icon(
+                imageVector = Icons.Default.ArrowBack,
+                contentDescription = "Back to Login",
+                tint = MaterialTheme.colorScheme.primary
+            )
+        }
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -123,6 +139,7 @@ fun AudioRecorderTool() {
             }
         }
     }
+        }
 }
 
 // Hàm định dạng thời gian (giây -> "mm:ss")
