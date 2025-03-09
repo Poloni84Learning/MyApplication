@@ -65,7 +65,7 @@ fun NewPasswordScreen(onConfirm: () -> Unit,
                     .padding(bottom = 16.dp),
                 visualTransformation = PasswordVisualTransformation()
             )
-            
+
             OutlinedTextField(
                 value = confirmPassword,
                 onValueChange = { confirmPassword = it },
