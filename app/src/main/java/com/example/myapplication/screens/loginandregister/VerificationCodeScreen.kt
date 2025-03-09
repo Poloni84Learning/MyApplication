@@ -23,6 +23,7 @@ fun VerificationCodeScreen(onConfirm: () -> Unit,
         .padding(16.dp))
 
     {
+
         IconButton(
             onClick = onNavigateBack,
             modifier = Modifier
