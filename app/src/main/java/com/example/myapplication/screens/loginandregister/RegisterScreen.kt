@@ -105,7 +105,6 @@ fun RegisterScreen(onNavigateToProject: () -> Unit,
             }
 
 
-
             Button(
                 onClick = onNavigateToProject,
                 modifier = Modifier
