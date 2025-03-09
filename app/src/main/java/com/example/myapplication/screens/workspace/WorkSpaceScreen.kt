@@ -28,14 +28,16 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.rememberModalBottomSheetState
 import com.example.myapplication.screens.workspace.tools.AudioRecorderTool
+import com.example.myapplication.screens.workspace.tools.PianoTool
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun WorkSpaceScreen(onNavigateSave: () -> Unit) {
+fun WorkSpaceScreen(onNavigateSave: ()-> Unit) {
     var selectedTab by remember { mutableStateOf("Audio") }
     var lyricsText by remember { mutableStateOf("") }
-    var showMenu by remember { mutableStateOf(false) } // Trạng thái hiển thị BottomSheet
-    var showAudioRecorder by remember { mutableStateOf(false) } // Trạng thái hiển thị AudioRecorderTool
+    var showMenu by remember { mutableStateOf(false) }
+    var showAudioRecorder by remember { mutableStateOf(false) }
+    var showPiano by remember { mutableStateOf(false) }
     val sheetState = rememberModalBottomSheetState()
 
     Column(
@@ -45,7 +47,7 @@ fun WorkSpaceScreen(onNavigateSave: () -> Unit) {
     ) {
         Spacer(modifier = Modifier.height(40.dp))
 
-        // Phần header
+
         Row(
             modifier = Modifier.fillMaxWidth().padding(16.dp),
             verticalAlignment = Alignment.CenterVertically,
@@ -125,7 +127,6 @@ fun WorkSpaceScreen(onNavigateSave: () -> Unit) {
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        // Phần nội dung chính
         Box(
             modifier = Modifier
                 .weight(1f)
@@ -134,37 +135,36 @@ fun WorkSpaceScreen(onNavigateSave: () -> Unit) {
                 .padding(16.dp),
             contentAlignment = Alignment.Center
         ) {
-            if (selectedTab == "Audio") {
-                if (showAudioRecorder) {
-                    AudioRecorderTool() // Hiển thị AudioRecorderTool nếu showAudioRecorder = true
-                } else {
-                    AudioContent()
-                }
-            } else {
-                Column(modifier = Modifier.fillMaxWidth()) {
-                    Text(
-                        text = "Input lyrics:",
-                        fontSize = 16.sp,
-                        fontWeight = FontWeight.Bold
-                    )
-
-                    Spacer(modifier = Modifier.height(8.dp))
-
-                    TextField(
-                        value = lyricsText,
-                        onValueChange = { lyricsText = it },
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(200.dp),
-                        placeholder = { Text("Input lyrics here...") },
-                        singleLine = false,
-                        colors = TextFieldDefaults.colors(
-                            focusedContainerColor = Color(0xFFF5F5F5),
-                            unfocusedContainerColor = Color(0xFFF5F5F5),
-                            focusedIndicatorColor = Color.Blue,
-                            unfocusedIndicatorColor = Color.Gray
+            when {
+                showAudioRecorder -> AudioRecorderTool()
+                showPiano -> PianoTool()
+                selectedTab == "Audio" -> AudioContent()
+                else -> {
+                    Column(modifier = Modifier.fillMaxWidth()) {
+                        Text(
+                            text = "Input lyrics:",
+                            fontSize = 16.sp,
+                            fontWeight = FontWeight.Bold
                         )
-                    )
+
+                        Spacer(modifier = Modifier.height(8.dp))
+
+                        TextField(
+                            value = lyricsText,
+                            onValueChange = { lyricsText = it },
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(200.dp),
+                            placeholder = { Text("Input lyrics here...") },
+                            singleLine = false,
+                            colors = TextFieldDefaults.colors(
+                                focusedContainerColor = Color(0xFFF5F5F5),
+                                unfocusedContainerColor = Color(0xFFF5F5F5),
+                                focusedIndicatorColor = Color.Blue,
+                                unfocusedIndicatorColor = Color.Gray
+                            )
+                        )
+                    }
                 }
             }
         }
@@ -173,7 +173,7 @@ fun WorkSpaceScreen(onNavigateSave: () -> Unit) {
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(bottom = 40.dp) // Khoảng đệm ở dưới
+                .padding(bottom = 40.dp)
         ) {
             Row(
                 modifier = Modifier
@@ -184,7 +184,7 @@ fun WorkSpaceScreen(onNavigateSave: () -> Unit) {
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                // Icon Menu (bên trái)
+
                 IconButton(onClick = { showMenu = true }) {
                     Icon(
                         imageVector = Icons.Default.Menu,
@@ -235,35 +235,41 @@ fun WorkSpaceScreen(onNavigateSave: () -> Unit) {
             }
         }
 
-        // BottomSheet hiển thị khi nhấn vào menu
+
         if (showMenu) {
             ModalBottomSheet(
                 onDismissRequest = { showMenu = false },
                 sheetState = sheetState,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .heightIn(max = 600.dp) // Giới hạn chiều cao tối đa
+                    .heightIn(max = 600.dp)
             ) {
                 // Nội dung của BottomSheet
                 MenuOptions(onOptionSelected = { option ->
                     when (option) {
-                        "Option 1" -> {
-                            showAudioRecorder = true // Hiển thị AudioRecorderTool
+                        "Voice" -> {
+                            showAudioRecorder = true
+                            showPiano = false
+                        }
+                        "Piano" -> {
+                            showPiano = true
+                            showAudioRecorder = false
                         }
                         else -> {
-                            // Xử lý các tùy chọn khác (nếu có)
+
                         }
                     }
-                    showMenu = false // Đóng BottomSheet sau khi chọn
+                    showMenu = false
                 })
             }
         }
     }
 }
 
+
 @Composable
 fun MenuOptions(onOptionSelected: (String) -> Unit) {
-    val options = listOf("Voice", "Piano", "Bass", "Guitar")
+    val options = listOf("Voice", "Piano", "Drum", "Bass")
 
     LazyColumn(
         modifier = Modifier
