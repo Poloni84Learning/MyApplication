@@ -26,7 +26,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.myapplication.R
 
-
 @Composable
 fun ProjectScreen(onNavigateToWorkSpace: () -> Unit) {
     Column(
