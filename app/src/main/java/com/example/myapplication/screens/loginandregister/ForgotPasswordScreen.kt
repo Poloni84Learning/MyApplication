@@ -54,6 +54,7 @@ fun ForgotPasswordScreen(onNavigateBack: () -> Unit,
                 fontSize = 16.sp,
                 modifier = Modifier.padding(bottom = 16.dp)
             )
+
             OutlinedTextField(
                 value = email,
                 onValueChange = { email = it },
