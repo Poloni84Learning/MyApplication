@@ -83,4 +83,5 @@ fun WelcomeScreen(onNavigateToNext: () -> Unit) {
             Spacer(modifier = Modifier.height(64.dp))
         }
     }
+
 }
