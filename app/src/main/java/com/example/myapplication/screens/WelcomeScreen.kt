@@ -24,7 +24,7 @@ fun WelcomeScreen(onNavigateToNext: () -> Unit) {
             .fillMaxSize()
     ) {
         Image(
-            painter = painterResource(id = R.drawable.capture),
+            painter = painterResource(id = R.drawable.picwelcome),
             contentDescription = "Background Image",
             modifier = Modifier
                 .fillMaxSize()

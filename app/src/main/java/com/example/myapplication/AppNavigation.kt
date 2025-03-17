@@ -20,7 +20,7 @@ fun AppNavigation() {
 
     NavHost(
         navController = navController,
-        startDestination = "welcome"
+        startDestination = "workspace"
     ) {
 
         composable("welcome") {
