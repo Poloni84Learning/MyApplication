@@ -27,8 +27,8 @@ fun PianoTool(onPowerClick: () ->  Unit) {
     ) {
         Row(
             modifier = Modifier
-            .fillMaxWidth() // Chiếm toàn bộ chiều rộng
-            .padding(16.dp), // Thêm padding xung quanh
+            .fillMaxWidth()
+            .padding(16.dp),
             horizontalArrangement = Arrangement.End
         ) {
             Text(
@@ -39,21 +39,21 @@ fun PianoTool(onPowerClick: () ->  Unit) {
             )
             Spacer(modifier = Modifier.width(80.dp))
             Icon(
-                imageVector = Icons.Default.Cancel, // Biểu tượng "tắt"
-                contentDescription = "Power", // Mô tả cho accessibility
-                tint = Color.White, // Màu của biểu tượng
+                imageVector = Icons.Default.Cancel,
+                contentDescription = "Power",
+                tint = Color.White,
                 modifier = Modifier
-                    .size(24.dp) // Kích thước biểu tượng
-                    .clickable { onPowerClick() } // Xử lý sự kiện khi nhấn
+                    .size(24.dp)
+                    .clickable { onPowerClick() }
             )
         }
-        // Box chứa cả phím trắng và phím đen
+
         Box(
             modifier = Modifier
                 .fillMaxWidth()
                 .height(200.dp)
         ) {
-            // Hàng chứa các phím trắng
+
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -107,7 +107,7 @@ fun PianoTool(onPowerClick: () ->  Unit) {
                 .fillMaxWidth()
                 .height(200.dp)
         ) {
-            // Hàng chứa các phím trắng
+
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
