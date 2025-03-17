@@ -136,8 +136,8 @@ fun WorkSpaceScreen(onNavigateSave: ()-> Unit) {
             contentAlignment = Alignment.Center
         ) {
             when {
-                showAudioRecorder -> AudioRecorderTool()
-                showPiano -> PianoTool()
+                showAudioRecorder -> AudioRecorderTool(onPowerClick = { showAudioRecorder = false })
+                showPiano -> PianoTool(onPowerClick = { showPiano = false })
                 selectedTab == "Audio" -> AudioContent()
                 else -> {
                     Column(modifier = Modifier.fillMaxWidth()) {

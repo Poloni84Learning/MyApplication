@@ -12,7 +12,9 @@ import androidx.compose.foundation.background
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.clickable
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Cancel
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.Stop
 import androidx.compose.material.icons.filled.Mic
@@ -24,7 +26,7 @@ import androidx.compose.ui.graphics.StrokeCap
 import kotlin.random.Random
 
 @Composable
-fun AudioRecorderTool() {
+fun AudioRecorderTool(onPowerClick: () -> Unit) {
     var isRecording by remember { mutableStateOf(false) }
     var isPlaying by remember { mutableStateOf(false) }
     var recordingTime by remember { mutableStateOf(0) }
@@ -37,14 +39,30 @@ fun AudioRecorderTool() {
             .padding(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth() // Chiếm toàn bộ chiều rộng
+                .padding(16.dp), // Thêm padding xung quanh
+            horizontalArrangement = Arrangement.End
+        ) {
+            Text(
+                text = formatTime(recordingTime),
+                fontSize = 24.sp,
+                fontWeight = FontWeight.Bold,
+                color = Color.White,
+                modifier = Modifier.padding(vertical = 16.dp)
+            )
+            Spacer(modifier = Modifier.width(80.dp))
+            Icon(
+                imageVector = Icons.Default.Cancel, // Biểu tượng "tắt"
+                contentDescription = "Power", // Mô tả cho accessibility
+                tint = Color.White, // Màu của biểu tượng
+                modifier = Modifier
+                    .size(24.dp) // Kích thước biểu tượng
+                    .clickable { onPowerClick() } // Xử lý sự kiện khi nhấn
+            )
+        }
 
-        Text(
-            text = formatTime(recordingTime),
-            fontSize = 24.sp,
-            fontWeight = FontWeight.Bold,
-            color = Color.White,
-            modifier = Modifier.padding(vertical = 16.dp)
-        )
 
 
         Box(

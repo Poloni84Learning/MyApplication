@@ -5,6 +5,8 @@ import androidx.compose.foundation.clickable
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Cancel
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -15,7 +17,7 @@ import androidx.compose.material3.*
 import androidx.compose.ui.unit.sp
 
 @Composable
-fun PianoTool() {
+fun PianoTool(onPowerClick: () ->  Unit) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -23,13 +25,28 @@ fun PianoTool() {
             .padding(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Text(
-            text = "Piano",
-            fontSize = 24.sp,
-            color = Color.White,
-            modifier = Modifier.padding(bottom = 16.dp)
-        )
-
+        Row(
+            modifier = Modifier
+            .fillMaxWidth() // Chiếm toàn bộ chiều rộng
+            .padding(16.dp), // Thêm padding xung quanh
+            horizontalArrangement = Arrangement.End
+        ) {
+            Text(
+                text = "Piano",
+                fontSize = 24.sp,
+                color = Color.White,
+                modifier = Modifier.padding(bottom = 16.dp)
+            )
+            Spacer(modifier = Modifier.width(80.dp))
+            Icon(
+                imageVector = Icons.Default.Cancel, // Biểu tượng "tắt"
+                contentDescription = "Power", // Mô tả cho accessibility
+                tint = Color.White, // Màu của biểu tượng
+                modifier = Modifier
+                    .size(24.dp) // Kích thước biểu tượng
+                    .clickable { onPowerClick() } // Xử lý sự kiện khi nhấn
+            )
+        }
         // Box chứa cả phím trắng và phím đen
         Box(
             modifier = Modifier
@@ -67,19 +84,73 @@ fun PianoTool() {
                 //  D#
                 PianoKey(color = Color.Black, note = "D#", modifier = Modifier
                     .width(30.dp)
-                    .offset(x = -6.dp, y = 0.dp))
+                    .offset(x = -14.dp, y = 0.dp))
                 //  F#
                 PianoKey(color = Color.Black, note = "F#", modifier = Modifier
                     .width(30.dp)
-                    .offset(x = 10.dp, y = 0.dp))
+                    .offset(x = 20.dp, y = 0.dp))
                 //  G#
                 PianoKey(color = Color.Black, note = "G#", modifier = Modifier
                     .width(30.dp)
-                    .offset(x = 10.dp, y = 0.dp))
+                    .offset(x = 13.dp, y = 0.dp))
                 //  A#
                 PianoKey(color = Color.Black, note = "A#", modifier = Modifier
                     .width(30.dp)
-                    .offset(x = 10.dp, y = 0.dp))
+                    .offset(x = 5.dp, y = 0.dp))
+            }
+        }
+
+        Spacer(modifier = Modifier.height(10.dp))
+
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(200.dp)
+        ) {
+            // Hàng chứa các phím trắng
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(200.dp),
+                horizontalArrangement = Arrangement.spacedBy(2.dp)
+            ) {
+                PianoKey(color = Color.White, note = "C", modifier = Modifier.weight(1f))
+                PianoKey(color = Color.White, note = "D", modifier = Modifier.weight(1f))
+                PianoKey(color = Color.White, note = "E", modifier = Modifier.weight(1f))
+                PianoKey(color = Color.White, note = "F", modifier = Modifier.weight(1f))
+                PianoKey(color = Color.White, note = "G", modifier = Modifier.weight(1f))
+                PianoKey(color = Color.White, note = "A", modifier = Modifier.weight(1f))
+                PianoKey(color = Color.White, note = "B", modifier = Modifier.weight(1f))
+            }
+
+
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(120.dp)
+                    .padding(horizontal = 32.dp),
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                //  C#
+                PianoKey(color = Color.Black, note = "C#", modifier = Modifier
+                    .width(30.dp)
+                    .offset(x = -6.dp, y = 0.dp))
+                //  D#
+                PianoKey(color = Color.Black, note = "D#", modifier = Modifier
+                    .width(30.dp)
+                    .offset(x = -14.dp, y = 0.dp))
+                //  F#
+                PianoKey(color = Color.Black, note = "F#", modifier = Modifier
+                    .width(30.dp)
+                    .offset(x = 20.dp, y = 0.dp))
+                //  G#
+                PianoKey(color = Color.Black, note = "G#", modifier = Modifier
+                    .width(30.dp)
+                    .offset(x = 13.dp, y = 0.dp))
+                //  A#
+                PianoKey(color = Color.Black, note = "A#", modifier = Modifier
+                    .width(30.dp)
+                    .offset(x = 5.dp, y = 0.dp))
             }
         }
     }
