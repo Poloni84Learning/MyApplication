@@ -6,6 +6,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.Save
 import androidx.compose.material.icons.filled.MusicNote
@@ -29,12 +30,18 @@ import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.rememberModalBottomSheetState
 import com.example.myapplication.screens.workspace.tools.AudioRecorderTool
 import com.example.myapplication.screens.workspace.tools.PianoTool
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.myapplication.screens.workspace.tools.PianoToolViewModel
+import com.example.myapplication.screens.workspace.LyricsViewModel
+
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun WorkSpaceScreen(onNavigateSave: ()-> Unit) {
+fun WorkSpaceScreen(onNavigateSave: ()-> Unit,
+                    viewModel: PianoToolViewModel = viewModel(),
+                    lyricsViewModel: LyricsViewModel = viewModel()
+) {
     var selectedTab by remember { mutableStateOf("Audio") }
-    var lyricsText by remember { mutableStateOf("") }
     var showMenu by remember { mutableStateOf(false) }
     var showAudioRecorder by remember { mutableStateOf(false) }
     var showPiano by remember { mutableStateOf(false) }
@@ -60,7 +67,7 @@ fun WorkSpaceScreen(onNavigateSave: ()-> Unit) {
                 modifier = Modifier.size(24.dp)
             ) {
                 Icon(
-                    imageVector = Icons.Default.Settings,
+                    imageVector = Icons.Default.ArrowBack,
                     contentDescription = "Settings",
                     tint = Color.Black
                 )
@@ -137,8 +144,8 @@ fun WorkSpaceScreen(onNavigateSave: ()-> Unit) {
         ) {
             when {
                 showAudioRecorder -> AudioRecorderTool(onPowerClick = { showAudioRecorder = false })
-                showPiano -> PianoTool(onPowerClick = { showPiano = false })
-                selectedTab == "Audio" -> AudioContent()
+                showPiano -> PianoTool(onPowerClick = { showPiano = false },viewModel = viewModel)
+                selectedTab == "Audio" -> AudioContent(viewModel = viewModel)
                 else -> {
                     Column(modifier = Modifier.fillMaxWidth()) {
                         Text(
@@ -150,8 +157,8 @@ fun WorkSpaceScreen(onNavigateSave: ()-> Unit) {
                         Spacer(modifier = Modifier.height(8.dp))
 
                         TextField(
-                            value = lyricsText,
-                            onValueChange = { lyricsText = it },
+                            value = lyricsViewModel.lyricsText,
+                            onValueChange = { lyricsViewModel.updateLyrics(it) },
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .height(200.dp),
@@ -169,7 +176,7 @@ fun WorkSpaceScreen(onNavigateSave: ()-> Unit) {
             }
         }
 
-        // Thanh Nav dưới
+
         Box(
             modifier = Modifier
                 .fillMaxWidth()
@@ -212,6 +219,11 @@ fun WorkSpaceScreen(onNavigateSave: ()-> Unit) {
                         modifier = Modifier
                             .size(24.dp)
                             .background(Color.Red, shape = MaterialTheme.shapes.medium)
+                            .clickable {
+                                if (showPiano) { // Chỉ chạy thời gian nếu PianoTool đã được mở
+                                viewModel.toggleTimer()
+                            }
+                            }
                     )
 
                     Spacer(modifier = Modifier.width(16.dp))
@@ -253,6 +265,7 @@ fun WorkSpaceScreen(onNavigateSave: ()-> Unit) {
                         }
                         "Piano" -> {
                             showPiano = true
+                            viewModel.resetTimer()
                             showAudioRecorder = false
                         }
                         else -> {
