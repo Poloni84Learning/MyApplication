@@ -9,89 +9,133 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.PathEffect
+
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.ui.res.painterResource
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
-import kotlin.random.Random
+
+import android.util.Log
+import androidx.compose.foundation.layout.Arrangement
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.myapplication.screens.workspace.tools.PianoToolViewModel
 
 
 @Composable
-fun AudioContent() {
-    val tracks = listOf(
-        "Guitar 1" to 0.8f,
-        "Voice 2" to 0.6f,
-        "Bass 1" to 0.7f,
-        "Drums" to 1.0f,
-        "Synth" to 0.5f
-    )
-
+fun AudioContent(viewModel: PianoToolViewModel = viewModel()) {
     Column(modifier = Modifier
         .fillMaxWidth()
         .padding(0.dp)) {
         TimeAxis()
 
         Row(modifier = Modifier.fillMaxSize()) {
-            // Track Labels & Volume Controls
+            // Phần bên trái: Tên track và thanh âm lượng
             Column(
                 modifier = Modifier
                     .width(120.dp)
-                    .fillMaxWidth()
+
                     .padding(1.dp)
             ) {
-                tracks.forEach { (name, volume) ->
-                    Box(
-                        modifier = Modifier
-                            .height(58.dp)
-                            .background(Color.LightGray,
-                        RoundedCornerShape(8.dp))
+                viewModel.recordings.forEach { (name,_) ->
+                    val volume = 0.5f // Giả sử âm lượng mặc định là 50%
+                    TrackLabelLeft(name = name, volume = volume)
+                }
+
+            }
+
+            // Phần ngăn cách màu đỏ
+            Box(
+                modifier = Modifier
+                    .width(1.5.dp)
+                    .fillMaxHeight()
+                    .background(Color.Red)
+            ) {
+                Canvas(modifier = Modifier.fillMaxSize()) {
+                    val circleRadius = 4.dp.toPx() // Bán kính hình tròn
+                    val circleY = 0f // Vị trí Y của hình tròn (đỉnh)
+                    val circleX = size.width / 2 // Vị trí X của hình tròn (giữa thanh ngăn cách)
+
+                    // Vẽ hình tròn màu đỏ
+                    drawCircle(
+                        color = Color.Red,
+                        radius = circleRadius,
+                        center = androidx.compose.ui.geometry.Offset(circleX, circleY)
                     )
-                    {
-                        TrackLabel(name, volume)
-                    }
-                    Spacer(modifier = Modifier.height(2.dp))
                 }
-                Box(
-                    modifier = Modifier
-                        .height(58.dp)
-                        .background(Color.LightGray,
-                            RoundedCornerShape(8.dp))
-                )
-                {
-                    IconButton(
-                        onClick = { },
-                        modifier = Modifier.width(60.dp)
-
-                    ) {
-                        Icon(
-                            imageVector = Icons.Filled.Add,
-                            contentDescription = "Add",
-                            modifier = Modifier
-                                .size(24.dp),
-                            tint = Color.White
-                        )
-                    }
-                }
-
-            }
-            Box(modifier = Modifier
-                .width(2.dp)
-                .fillMaxHeight()
-                .background(Color.Red))
-
-
-            Box(modifier = Modifier.weight(1f)) {
-                AudioTracksDisplay(tracks.size)
             }
 
 
 
+            Column(modifier = Modifier.weight(1f)) {
+                viewModel.recordings.forEach { (_, recordingData) ->
+
+                    val (notes, sessionDuration) = recordingData
+
+                    // Hiển thị TrackLabelRight
+                    TrackLabelRight(sessionDuration = sessionDuration, recording = notes)
+                    Log.d("Au","session: $sessionDuration")
+                    val lastNote = notes.last()
+                    val (noteName, info) = lastNote
+                    val (startTime, duration) = info
+                    val spacing2 = ((sessionDuration - duration - startTime)/ 40).toFloat().dp
+                    Spacer(modifier = Modifier.width(spacing2))
+                }
+
+            }
         }
     }
+}
+@Composable
+fun TrackLabelRight(sessionDuration: Long, recording: List<Pair<String, Pair<Long, Long>>>) {
+    Spacer(modifier = Modifier.height(1.dp))
+
+    Box(
+        modifier = Modifier
+            .height(58.dp)
+            .width(((sessionDuration)/40).toFloat().dp) // Chiều rộng tỷ lệ với thời gian
+            .background(Color(0xFF1E1E1E), RoundedCornerShape(2.dp))
+
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxHeight()
+                .fillMaxWidth()
+                .padding(0.dp),
+            horizontalArrangement = Arrangement.spacedBy(0.dp)
+
+        ) {
+            var previousTimestamp = 0L
+            recording.forEach { recordingEntry ->
+                val note = recordingEntry.first // Lấy tên note
+                val startTime = recordingEntry.second.first // Lấy thời điểm bắt đầu nhấn note
+                val noteDuration = recordingEntry.second.second // Lấy độ dài của note
+
+                val notePosition = getNotePosition(note) // Vị trí dọc dựa trên tên note
+
+                val spacing1 = ((startTime - previousTimestamp) / 40).toFloat().dp
+
+
+                    Spacer(modifier = Modifier.width(spacing1))
+
+                    Box(
+                        modifier = Modifier
+                            .width((noteDuration / 40).toFloat().dp) // Chiều rộng của note tỷ lệ với thời gian
+                    ) {
+                        Column (
+                            modifier = Modifier
+                                .height(5.dp)
+                                .fillMaxWidth()
+                                .padding(0.dp)
+                                .offset(y = (notePosition*8).dp)
+                                .background(color = if (note.contains("#")) Color.DarkGray else Color.White)
+                        ) {
+                            Log.d("Au","note: $note, startTime: $startTime, noteDuration: $noteDuration, pre: $previousTimestamp")
+                        }
+                    }
+
+                previousTimestamp = startTime + noteDuration
+            }
+        }
+    }
+    Spacer(modifier = Modifier.height(1.dp))
 }
 
 @Composable
@@ -101,10 +145,10 @@ fun TimeAxis() {
             .fillMaxWidth()
             .height(20.dp)
             .background(Color(0xFF34495E))
-            .padding(start = 98.dp),
-        horizontalArrangement = Arrangement.SpaceEvenly,
+            .padding(start = 120.dp),
+        horizontalArrangement = Arrangement.spacedBy(18.dp),
     ) {
-        for (i in 0..7) {
+        for (i in 0..15) {
             Row(
 
             ) {
@@ -128,63 +172,53 @@ fun TimeAxis() {
 }
 
 @Composable
-fun TrackLabel(name: String, volume: Float) {
-    Column(
+fun TrackLabelLeft(name: String, volume: Float) {
+    Spacer(modifier = Modifier.height(1.dp))
+    Box(
         modifier = Modifier
-            .fillMaxWidth()
-            .padding(vertical = 8.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
+            .width(80.dp)
+            .height(58.dp)
+            .background(Color.LightGray, RoundedCornerShape(8.dp))
+            .padding(8.dp)
     ) {
-        Text(
-            text = name,
-            fontSize = 14.sp
-        )
-        Spacer(modifier = Modifier.height(4.dp))
-        Box(
-            modifier = Modifier
-                .width(80.dp)
-                .height(10.dp)
-                .background(Color.Black, RoundedCornerShape(4.dp))
-        ) {
-            Box(
-                modifier = Modifier
-                    .fillMaxHeight()
-                    .width((50 * volume).dp)
-                    .background(Color.White, RoundedCornerShape(4.dp))
-            )
-        }
-    }
-}
 
-@Composable
-fun AudioTracksDisplay(trackCount: Int) {
-    Column(modifier = Modifier.fillMaxSize()) {
-        repeat(trackCount) {
-
-            Spacer(modifier = Modifier.height(1.dp))
+        Column {
+            Text(text = name, fontSize = 14.sp)
+            Spacer(modifier = Modifier.height(4.dp))
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(58.dp)
-                    .background(Color(0xFF1E1E1E), RoundedCornerShape(8.dp))
-
-
+                    .height(3.dp)
+                    .background(Color.Black, RoundedCornerShape(4.dp))
             ) {
-
-                Canvas(modifier = Modifier.padding(5.dp)) {
-                    val pathEffect = PathEffect.dashPathEffect(floatArrayOf(10f, 10f), 0f)
-                    for (i in 0..size.width.toInt() step 20) {
-                        drawLine(
-                            color = Color.White,
-                            start = androidx.compose.ui.geometry.Offset(i.toFloat(), 0f),
-                            end = androidx.compose.ui.geometry.Offset(i.toFloat(), size.height),
-                            strokeWidth = 1f,
-                            pathEffect = pathEffect
-                        )
-                    }
-                }
+                Box(
+                    modifier = Modifier
+                        .fillMaxHeight()
+                        .width((volume * 100).dp) // Thanh âm lượng
+                        .background(Color.White, RoundedCornerShape(4.dp))
+                )
             }
-            Spacer(modifier = Modifier.height(1.dp))
         }
+    }
+    Spacer(modifier = Modifier.height(1.dp))
+
+}
+
+
+fun getNotePosition(note: String): Int {
+    return when (note) {
+        "C" -> 0
+        "C#" -> 0
+        "D" -> 1
+        "D#" -> 1
+        "E" -> 2
+        "F" -> 3
+        "F#" -> 3
+        "G" -> 4
+        "G#" -> 4
+        "A" -> 5
+        "A#" -> 5
+        "B" -> 6
+        else -> 0
     }
 }
