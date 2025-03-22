@@ -50,15 +50,15 @@ android {
 dependencies {
     implementation(platform("androidx.compose:compose-bom:2023.10.01"))
 
-    // Compose dependencies (không cần chỉ định phiên bản)
+    implementation ("androidx.lifecycle:lifecycle-viewmodel-compose:2.6.2")
     implementation("androidx.compose.ui:ui")
     implementation("androidx.compose.material3:material3")
     implementation("androidx.compose.ui:ui-tooling-preview")
     implementation("androidx.activity:activity-compose")
-    implementation("androidx.navigation:navigation-compose:2.7.4") // Navigation không thuộc BOM
+    implementation("androidx.navigation:navigation-compose:2.7.4")
     implementation ("jp.wasabeef:blurry:4.0.1")
     implementation ("androidx.compose.material:material-icons-extended:1.6.7")
-    // Debug tools
+
     debugImplementation("androidx.compose.ui:ui-tooling")
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
