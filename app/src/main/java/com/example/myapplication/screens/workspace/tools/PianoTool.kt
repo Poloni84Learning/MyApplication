@@ -15,9 +15,17 @@ import androidx.compose.ui.unit.dp
 
 import androidx.compose.material3.*
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.compose.runtime.mutableStateOf
+
+import androidx.compose.runtime.*
+import androidx.compose.foundation.gestures.detectTapGestures
+import androidx.compose.foundation.gestures.waitForUpOrCancellation
+import androidx.compose.ui.input.pointer.pointerInput
 
 @Composable
-fun PianoTool(onPowerClick: () ->  Unit) {
+fun PianoTool(onPowerClick: () ->  Unit,
+              viewModel: PianoToolViewModel = viewModel()) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -29,22 +37,29 @@ fun PianoTool(onPowerClick: () ->  Unit) {
             modifier = Modifier
             .fillMaxWidth()
             .padding(16.dp),
-            horizontalArrangement = Arrangement.End
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
         ) {
+            Text(
+                text = "Time: ${viewModel.elapsedTime / 1000}s",
+                fontSize = 18.sp,
+                color = Color.White,
+                modifier = Modifier.padding(end = 16.dp)
+            )
             Text(
                 text = "Piano",
                 fontSize = 24.sp,
-                color = Color.White,
-                modifier = Modifier.padding(bottom = 16.dp)
+                color = Color.White
             )
-            Spacer(modifier = Modifier.width(80.dp))
             Icon(
                 imageVector = Icons.Default.Cancel,
                 contentDescription = "Power",
                 tint = Color.White,
                 modifier = Modifier
                     .size(24.dp)
-                    .clickable { onPowerClick() }
+                    .clickable {
+                        onPowerClick()
+                    }
             )
         }
 
@@ -60,13 +75,14 @@ fun PianoTool(onPowerClick: () ->  Unit) {
                     .height(200.dp),
                 horizontalArrangement = Arrangement.spacedBy(2.dp)
             ) {
-                PianoKey(color = Color.White, note = "C", modifier = Modifier.weight(1f))
-                PianoKey(color = Color.White, note = "D", modifier = Modifier.weight(1f))
-                PianoKey(color = Color.White, note = "E", modifier = Modifier.weight(1f))
-                PianoKey(color = Color.White, note = "F", modifier = Modifier.weight(1f))
-                PianoKey(color = Color.White, note = "G", modifier = Modifier.weight(1f))
-                PianoKey(color = Color.White, note = "A", modifier = Modifier.weight(1f))
-                PianoKey(color = Color.White, note = "B", modifier = Modifier.weight(1f))
+                PianoKey(color = Color.White, note = "C", onKeyDown = { viewModel.onKeyDown("C") }, onKeyUp = { viewModel.onKeyUp("C") }, modifier = Modifier.weight(1f))
+                PianoKey(color = Color.White, note = "D", onKeyDown = { viewModel.onKeyDown("D") }, onKeyUp = { viewModel.onKeyUp("D") }, modifier = Modifier.weight(1f))
+                PianoKey(color = Color.White, note = "E", onKeyDown = { viewModel.onKeyDown("E") }, onKeyUp = { viewModel.onKeyUp("E") }, modifier = Modifier.weight(1f))
+                PianoKey(color = Color.White, note = "F", onKeyDown = { viewModel.onKeyDown("F") }, onKeyUp = { viewModel.onKeyUp("F") }, modifier = Modifier.weight(1f))
+                PianoKey(color = Color.White, note = "G", onKeyDown = { viewModel.onKeyDown("G") }, onKeyUp = { viewModel.onKeyUp("G") }, modifier = Modifier.weight(1f))
+                PianoKey(color = Color.White, note = "A", onKeyDown = { viewModel.onKeyDown("A") }, onKeyUp = { viewModel.onKeyUp("A") }, modifier = Modifier.weight(1f))
+                PianoKey(color = Color.White, note = "B", onKeyDown = { viewModel.onKeyDown("B") }, onKeyUp = { viewModel.onKeyUp("B") }, modifier = Modifier.weight(1f))
+
             }
 
 
@@ -78,23 +94,23 @@ fun PianoTool(onPowerClick: () ->  Unit) {
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 //  C#
-                PianoKey(color = Color.Black, note = "C#", modifier = Modifier
+                PianoKey(color = Color.Black, note = "C#",onKeyDown = { viewModel.onKeyDown("C#") }, onKeyUp = { viewModel.onKeyUp("C#") }, modifier = Modifier
                     .width(30.dp)
                     .offset(x = -6.dp, y = 0.dp))
                 //  D#
-                PianoKey(color = Color.Black, note = "D#", modifier = Modifier
+                PianoKey(color = Color.Black, note = "D#",onKeyDown = { viewModel.onKeyDown("D#") }, onKeyUp = { viewModel.onKeyUp("D#") }, modifier = Modifier
                     .width(30.dp)
                     .offset(x = -14.dp, y = 0.dp))
                 //  F#
-                PianoKey(color = Color.Black, note = "F#", modifier = Modifier
+                PianoKey(color = Color.Black, note = "F#",onKeyDown = { viewModel.onKeyDown("F#") }, onKeyUp = { viewModel.onKeyUp("F#") }, modifier = Modifier
                     .width(30.dp)
                     .offset(x = 20.dp, y = 0.dp))
                 //  G#
-                PianoKey(color = Color.Black, note = "G#", modifier = Modifier
+                PianoKey(color = Color.Black, note = "G#",onKeyDown = { viewModel.onKeyDown("G#") }, onKeyUp = { viewModel.onKeyUp("G#") }, modifier = Modifier
                     .width(30.dp)
                     .offset(x = 13.dp, y = 0.dp))
                 //  A#
-                PianoKey(color = Color.Black, note = "A#", modifier = Modifier
+                PianoKey(color = Color.Black, note = "A#",onKeyDown = { viewModel.onKeyDown("A#") }, onKeyUp = { viewModel.onKeyUp("A#") }, modifier = Modifier
                     .width(30.dp)
                     .offset(x = 5.dp, y = 0.dp))
             }
@@ -114,13 +130,14 @@ fun PianoTool(onPowerClick: () ->  Unit) {
                     .height(200.dp),
                 horizontalArrangement = Arrangement.spacedBy(2.dp)
             ) {
-                PianoKey(color = Color.White, note = "C", modifier = Modifier.weight(1f))
-                PianoKey(color = Color.White, note = "D", modifier = Modifier.weight(1f))
-                PianoKey(color = Color.White, note = "E", modifier = Modifier.weight(1f))
-                PianoKey(color = Color.White, note = "F", modifier = Modifier.weight(1f))
-                PianoKey(color = Color.White, note = "G", modifier = Modifier.weight(1f))
-                PianoKey(color = Color.White, note = "A", modifier = Modifier.weight(1f))
-                PianoKey(color = Color.White, note = "B", modifier = Modifier.weight(1f))
+                PianoKey(color = Color.White, note = "C", onKeyDown = { viewModel.onKeyDown("C") }, onKeyUp = { viewModel.onKeyUp("C") }, modifier = Modifier.weight(1f))
+                PianoKey(color = Color.White, note = "D", onKeyDown = { viewModel.onKeyDown("D") }, onKeyUp = { viewModel.onKeyUp("D") }, modifier = Modifier.weight(1f))
+                PianoKey(color = Color.White, note = "E", onKeyDown = { viewModel.onKeyDown("E") }, onKeyUp = { viewModel.onKeyUp("E") }, modifier = Modifier.weight(1f))
+                PianoKey(color = Color.White, note = "F", onKeyDown = { viewModel.onKeyDown("F") }, onKeyUp = { viewModel.onKeyUp("F") }, modifier = Modifier.weight(1f))
+                PianoKey(color = Color.White, note = "G", onKeyDown = { viewModel.onKeyDown("G") }, onKeyUp = { viewModel.onKeyUp("G") }, modifier = Modifier.weight(1f))
+                PianoKey(color = Color.White, note = "A", onKeyDown = { viewModel.onKeyDown("A") }, onKeyUp = { viewModel.onKeyUp("A") }, modifier = Modifier.weight(1f))
+                PianoKey(color = Color.White, note = "B", onKeyDown = { viewModel.onKeyDown("B") }, onKeyUp = { viewModel.onKeyUp("B") }, modifier = Modifier.weight(1f))
+
             }
 
 
@@ -132,23 +149,23 @@ fun PianoTool(onPowerClick: () ->  Unit) {
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 //  C#
-                PianoKey(color = Color.Black, note = "C#", modifier = Modifier
+                PianoKey(color = Color.Black, note = "C#",onKeyDown = { viewModel.onKeyDown("C#") }, onKeyUp = { viewModel.onKeyUp("C#") }, modifier = Modifier
                     .width(30.dp)
                     .offset(x = -6.dp, y = 0.dp))
                 //  D#
-                PianoKey(color = Color.Black, note = "D#", modifier = Modifier
+                PianoKey(color = Color.Black, note = "D#",onKeyDown = { viewModel.onKeyDown("D#") }, onKeyUp = { viewModel.onKeyUp("D#") }, modifier = Modifier
                     .width(30.dp)
                     .offset(x = -14.dp, y = 0.dp))
                 //  F#
-                PianoKey(color = Color.Black, note = "F#", modifier = Modifier
+                PianoKey(color = Color.Black, note = "F#",onKeyDown = { viewModel.onKeyDown("F#") }, onKeyUp = { viewModel.onKeyUp("F#") }, modifier = Modifier
                     .width(30.dp)
                     .offset(x = 20.dp, y = 0.dp))
                 //  G#
-                PianoKey(color = Color.Black, note = "G#", modifier = Modifier
+                PianoKey(color = Color.Black, note = "G#",onKeyDown = { viewModel.onKeyDown("G#") }, onKeyUp = { viewModel.onKeyUp("G#") }, modifier = Modifier
                     .width(30.dp)
                     .offset(x = 13.dp, y = 0.dp))
                 //  A#
-                PianoKey(color = Color.Black, note = "A#", modifier = Modifier
+                PianoKey(color = Color.Black, note = "A#",onKeyDown = { viewModel.onKeyDown("A#") }, onKeyUp = { viewModel.onKeyUp("A#") }, modifier = Modifier
                     .width(30.dp)
                     .offset(x = 5.dp, y = 0.dp))
             }
@@ -157,7 +174,13 @@ fun PianoTool(onPowerClick: () ->  Unit) {
 }
 
 @Composable
-fun PianoKey(color: Color, note: String, modifier: Modifier = Modifier) {
+fun PianoKey(
+    color: Color,
+    note: String,
+    onKeyDown: () -> Unit, // Sự kiện nhấn phím
+    onKeyUp: () -> Unit,   // Sự kiện thả phím
+    modifier: Modifier = Modifier
+) {
     val bottomRoundedShape1 = RoundedCornerShape(
         topStart = 0.dp,
         topEnd = 0.dp,
@@ -171,11 +194,26 @@ fun PianoKey(color: Color, note: String, modifier: Modifier = Modifier) {
         bottomEnd = 2.dp
     )
 
+    var isPressed by remember { mutableStateOf(false) } // Trạng thái nhấn phím
+
     Box(
         modifier = modifier
             .height(if (color == Color.White) 200.dp else 120.dp)
-            .background(color, shape = if (color == Color.White)  bottomRoundedShape1 else bottomRoundedShape2)
-            .clickable { println("Key $note pressed") },
+            .background(
+                color = if (isPressed) Color.Gray else color, // Đổi màu khi nhấn phím
+                shape = if (color == Color.White) bottomRoundedShape1 else bottomRoundedShape2
+            )
+            .pointerInput(Unit) {
+                detectTapGestures(
+                    onPress = { // Sự kiện nhấn phím
+                        isPressed = true
+                        onKeyDown()
+                        tryAwaitRelease() // Chờ đến khi thả phím
+                        isPressed = false
+                        onKeyUp()
+                    }
+                )
+            },
         contentAlignment = Alignment.BottomCenter
     ) {
         Text(
