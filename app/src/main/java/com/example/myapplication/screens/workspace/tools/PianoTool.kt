@@ -177,8 +177,8 @@ fun PianoTool(onPowerClick: () ->  Unit,
 fun PianoKey(
     color: Color,
     note: String,
-    onKeyDown: () -> Unit, // Sự kiện nhấn phím
-    onKeyUp: () -> Unit,   // Sự kiện thả phím
+    onKeyDown: () -> Unit,
+    onKeyUp: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     val bottomRoundedShape1 = RoundedCornerShape(
@@ -194,21 +194,21 @@ fun PianoKey(
         bottomEnd = 2.dp
     )
 
-    var isPressed by remember { mutableStateOf(false) } // Trạng thái nhấn phím
+    var isPressed by remember { mutableStateOf(false) }
 
     Box(
         modifier = modifier
             .height(if (color == Color.White) 200.dp else 120.dp)
             .background(
-                color = if (isPressed) Color.Gray else color, // Đổi màu khi nhấn phím
+                color = if (isPressed) Color.Gray else color,
                 shape = if (color == Color.White) bottomRoundedShape1 else bottomRoundedShape2
             )
             .pointerInput(Unit) {
                 detectTapGestures(
-                    onPress = { // Sự kiện nhấn phím
+                    onPress = {
                         isPressed = true
                         onKeyDown()
-                        tryAwaitRelease() // Chờ đến khi thả phím
+                        tryAwaitRelease()
                         isPressed = false
                         onKeyUp()
                     }

@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 
@@ -27,7 +26,7 @@ fun AudioContent(viewModel: PianoToolViewModel = viewModel()) {
         TimeAxis()
 
         Row(modifier = Modifier.fillMaxSize()) {
-            // Phần bên trái: Tên track và thanh âm lượng
+
             Column(
                 modifier = Modifier
                     .width(120.dp)
@@ -35,13 +34,13 @@ fun AudioContent(viewModel: PianoToolViewModel = viewModel()) {
                     .padding(1.dp)
             ) {
                 viewModel.recordings.forEach { (name,_) ->
-                    val volume = 0.5f // Giả sử âm lượng mặc định là 50%
+                    val volume = 0.5f
                     TrackLabelLeft(name = name, volume = volume)
                 }
 
             }
 
-            // Phần ngăn cách màu đỏ
+
             Box(
                 modifier = Modifier
                     .width(1.5.dp)
@@ -49,11 +48,11 @@ fun AudioContent(viewModel: PianoToolViewModel = viewModel()) {
                     .background(Color.Red)
             ) {
                 Canvas(modifier = Modifier.fillMaxSize()) {
-                    val circleRadius = 4.dp.toPx() // Bán kính hình tròn
-                    val circleY = 0f // Vị trí Y của hình tròn (đỉnh)
-                    val circleX = size.width / 2 // Vị trí X của hình tròn (giữa thanh ngăn cách)
+                    val circleRadius = 4.dp.toPx()
+                    val circleY = 0f
+                    val circleX = size.width / 2
 
-                    // Vẽ hình tròn màu đỏ
+
                     drawCircle(
                         color = Color.Red,
                         radius = circleRadius,
@@ -69,7 +68,7 @@ fun AudioContent(viewModel: PianoToolViewModel = viewModel()) {
 
                     val (notes, sessionDuration) = recordingData
 
-                    // Hiển thị TrackLabelRight
+
                     TrackLabelRight(sessionDuration = sessionDuration, recording = notes)
                     Log.d("Au","session: $sessionDuration")
                     val lastNote = notes.last()
@@ -90,7 +89,7 @@ fun TrackLabelRight(sessionDuration: Long, recording: List<Pair<String, Pair<Lon
     Box(
         modifier = Modifier
             .height(58.dp)
-            .width(((sessionDuration)/40).toFloat().dp) // Chiều rộng tỷ lệ với thời gian
+            .width(((sessionDuration)/40).toFloat().dp)
             .background(Color(0xFF1E1E1E), RoundedCornerShape(2.dp))
 
     ) {
@@ -104,11 +103,11 @@ fun TrackLabelRight(sessionDuration: Long, recording: List<Pair<String, Pair<Lon
         ) {
             var previousTimestamp = 0L
             recording.forEach { recordingEntry ->
-                val note = recordingEntry.first // Lấy tên note
-                val startTime = recordingEntry.second.first // Lấy thời điểm bắt đầu nhấn note
-                val noteDuration = recordingEntry.second.second // Lấy độ dài của note
+                val note = recordingEntry.first
+                val startTime = recordingEntry.second.first
+                val noteDuration = recordingEntry.second.second
 
-                val notePosition = getNotePosition(note) // Vị trí dọc dựa trên tên note
+                val notePosition = getNotePosition(note)
 
                 val spacing1 = ((startTime - previousTimestamp) / 40).toFloat().dp
 
@@ -117,7 +116,7 @@ fun TrackLabelRight(sessionDuration: Long, recording: List<Pair<String, Pair<Lon
 
                     Box(
                         modifier = Modifier
-                            .width((noteDuration / 40).toFloat().dp) // Chiều rộng của note tỷ lệ với thời gian
+                            .width((noteDuration / 40).toFloat().dp)
                     ) {
                         Column (
                             modifier = Modifier
@@ -194,7 +193,7 @@ fun TrackLabelLeft(name: String, volume: Float) {
                 Box(
                     modifier = Modifier
                         .fillMaxHeight()
-                        .width((volume * 100).dp) // Thanh âm lượng
+                        .width((volume * 100).dp)
                         .background(Color.White, RoundedCornerShape(4.dp))
                 )
             }
