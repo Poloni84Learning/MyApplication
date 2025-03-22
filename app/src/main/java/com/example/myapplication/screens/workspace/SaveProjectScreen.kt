@@ -20,6 +20,8 @@ import com.example.myapplication.R
 
 @Composable
 fun SaveProjectScreen(onNavigateBack: () -> Unit) {
+    var title by remember { mutableStateOf("") }
+    var description by remember { mutableStateOf("") }
     Box(modifier = Modifier
         .fillMaxSize()
         .padding(16.dp))
@@ -43,7 +45,7 @@ fun SaveProjectScreen(onNavigateBack: () -> Unit) {
                 .padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            Spacer(modifier = Modifier.height(80.dp))
+            Spacer(modifier = Modifier.height(10.dp))
 
             Text(
                 text = "Save Project",
@@ -51,20 +53,24 @@ fun SaveProjectScreen(onNavigateBack: () -> Unit) {
                 fontWeight = FontWeight.Bold,
                 modifier = Modifier.align(Alignment.CenterHorizontally)
             )
-
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .aspectRatio(1f)
-                    .background(Color.LightGray, shape = RoundedCornerShape(8.dp)),
-                contentAlignment = Alignment.Center
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.Center
             ) {
-                Text(
-                    text = "Cover ART",
-                    fontSize = 18.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = Color.Gray
-                )
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth(0.5f)
+                        .aspectRatio(1f)
+                        .background(Color.LightGray, shape = RoundedCornerShape(8.dp)),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(
+                        text = "Cover ART",
+                        fontSize = 18.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = Color.Gray
+                    )
+                }
             }
 
 
@@ -72,18 +78,61 @@ fun SaveProjectScreen(onNavigateBack: () -> Unit) {
                 modifier = Modifier.fillMaxWidth(),
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                Text(
-                    text = "Title name",
-                    fontSize = 18.sp,
-                    fontWeight = FontWeight.Bold
+                TextField(
+                    value = title,
+                    onValueChange = { title = it },
+                    modifier = Modifier.fillMaxWidth(),
+                    placeholder = {
+                        Text(
+                            text = "Title name",
+                            fontSize = 18.sp,
+                            fontWeight = FontWeight.Bold
+                        )
+                    },
+                    singleLine = true,
+                    textStyle = LocalTextStyle.current.copy(
+                        fontSize = 18.sp,
+                        fontWeight = FontWeight.Bold
+                    )
                 )
-                Text(
-                    text = "Description",
-                    fontSize = 14.sp,
-                    color = Color.Gray
+
+                TextField(
+                    value = description,
+                    onValueChange = { description = it },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(150.dp),
+                    placeholder = {
+                        Text(
+                            text = "Description",
+                            fontSize = 14.sp,
+                            color = Color.Gray
+                        )
+                    },
+                    textStyle = LocalTextStyle.current.copy(
+                        fontSize = 14.sp,
+                        color = Color.Gray
+                    ),
+                    maxLines = 5
                 )
             }
 
+            Button(
+                onClick = { },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(50.dp),
+                shape = RoundedCornerShape(8.dp),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = Color(0xFF6200EE)
+                )
+            ) {
+                Text(
+                    text = "Save",
+                    fontSize = 16.sp,
+                    color = Color.White
+                )
+            }
             Button(
                 onClick = { },
                 modifier = Modifier
