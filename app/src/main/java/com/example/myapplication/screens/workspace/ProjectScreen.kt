@@ -34,7 +34,7 @@ fun ProjectScreen(onNavigateToWorkSpace: () -> Unit) {
             .padding(16.dp)
     ) {
         Spacer(modifier = Modifier.height(40.dp))
-        // Phần header
+
         Row(
             modifier = Modifier.fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically,
@@ -46,18 +46,18 @@ fun ProjectScreen(onNavigateToWorkSpace: () -> Unit) {
                 fontWeight = FontWeight.Bold
             )
 
-            // Avatar hình tròn
+
             Box(
                 modifier = Modifier
                     .size(40.dp)
                     .clip(CircleShape)
                     .background(Color.LightGray)
-                    .clickable(onClick = {}), // Xử lý sự kiện nhấn avatar
+                    .clickable(onClick = {}),
                 contentAlignment = Alignment.Center
             ) {
-                // Thêm ảnh avatar (nếu có)
+
                 Image(
-                    painter = painterResource(id = R.drawable.avatar), // Thay bằng ảnh avatar thực tế
+                    painter = painterResource(id = R.drawable.avatar),
                     contentDescription = "Avatar",
                     modifier = Modifier.fillMaxSize(),
                     contentScale = ContentScale.Crop
@@ -71,10 +71,10 @@ fun ProjectScreen(onNavigateToWorkSpace: () -> Unit) {
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            // Bên trái: Text "All" và mũi tên hướng xuống
+
             Row(
                 verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier.clickable { /* Xử lý khi nhấn */ }
+                modifier = Modifier.clickable {  }
             ) {
                 Text(
                     text = "All",
@@ -88,12 +88,12 @@ fun ProjectScreen(onNavigateToWorkSpace: () -> Unit) {
                 )
             }
 
-            // Bên phải: Hai mũi tên lên xuống và nút "New"
+
             Row(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 IconButton(
-                    onClick = { /* Xử lý sắp xếp tăng dần */ },
+                    onClick = {  },
                     modifier = Modifier.size(24.dp)
                 ) {
                     Icon(
@@ -102,7 +102,7 @@ fun ProjectScreen(onNavigateToWorkSpace: () -> Unit) {
                     )
                 }
                 IconButton(
-                    onClick = { /* Xử lý sắp xếp giảm dần */ },
+                    onClick = {  },
                     modifier = Modifier.size(24.dp)
                 ) {
                     Icon(
@@ -115,11 +115,7 @@ fun ProjectScreen(onNavigateToWorkSpace: () -> Unit) {
                     onClick = onNavigateToWorkSpace,
 
                 ) {
-//                    Icon(
-//                        painter = painterResource(id = R.drawable.ic_add),
-//                        contentDescription = "Add",
-//                        modifier = Modifier.size(18.dp)
-//                    )
+
                     Text("+")
                     Spacer(modifier = Modifier.width(4.dp))
                     Text("New")
@@ -129,9 +125,9 @@ fun ProjectScreen(onNavigateToWorkSpace: () -> Unit) {
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        // Phần body: Danh sách dự án
+
         val projects = listOf(
-            Project("Project 1", "6 days ago", R.drawable.project1), // Thay bằng ảnh thực tế
+            Project("Project 1", "6 days ago", R.drawable.project1),
             Project("Project 2", "3 days ago", R.drawable.project2),
             Project("Project 3", "1 day ago", R.drawable.project3)
         )
@@ -152,7 +148,7 @@ fun ProjectItem(project: Project) {
             .padding(vertical = 8.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        // Ảnh dự án
+
         Image(
             painter = painterResource(id = project.imageRes),
             contentDescription = "Project Image",
@@ -165,7 +161,7 @@ fun ProjectItem(project: Project) {
 
         Spacer(modifier = Modifier.width(16.dp))
 
-        // Tên và thời gian hoàn thiện
+
         Column(
             modifier = Modifier.weight(1f)
         ) {
@@ -181,9 +177,9 @@ fun ProjectItem(project: Project) {
             )
         }
 
-        // Menu 3 dấu chấm
+
         IconButton(
-            onClick = { /* Xử lý khi nhấn menu */ },
+            onClick = {  },
             modifier = Modifier.size(24.dp)
         ) {
             Icon(
@@ -197,5 +193,5 @@ fun ProjectItem(project: Project) {
 data class Project(
     val name: String,
     val completionTime: String,
-    val imageRes: Int // Resource ID của ảnh
+    val imageRes: Int
 )
