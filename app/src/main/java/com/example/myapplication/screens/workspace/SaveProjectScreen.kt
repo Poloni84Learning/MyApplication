@@ -1,6 +1,6 @@
 package com.example.myapplication.screens.workspace
 
-import androidx.compose.foundation.Image
+
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
@@ -8,21 +8,31 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.foundation.background
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.myapplication.models.ToolViewModel
 import com.example.myapplication.R
-import com.example.myapplication.screens.workspace.tools.ToolViewModel
+import com.example.myapplication.models.JsonFileManager
+import com.example.myapplication.models.ToolViewModelFactory
+
 
 @Composable
-fun SaveProjectScreen(onNavigateBack: () -> Unit,
-                      toolViewModel: ToolViewModel = viewModel() ) {
+fun SaveProjectScreen(
+    onNavigateBack: () -> Unit,
+    onNavigateToPro: () -> Unit,
+
+    toolViewModel: ToolViewModel = viewModel(
+        factory = ToolViewModelFactory(
+            jsonFileManager = JsonFileManager(LocalContext.current)
+        )
+    )
+) {
 
     Box(modifier = Modifier
         .fillMaxSize()
@@ -119,24 +129,16 @@ fun SaveProjectScreen(onNavigateBack: () -> Unit,
                 )
             }
 
+            
             Button(
-                onClick = { },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(50.dp),
-                shape = RoundedCornerShape(8.dp),
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = Color(0xFF6200EE)
-                )
-            ) {
-                Text(
-                    text = "Save",
-                    fontSize = 16.sp,
-                    color = Color.White
-                )
-            }
-            Button(
-                onClick = { },
+                onClick = {
+                    toolViewModel.addProject(
+                        title = toolViewModel.titleText,
+                        description = toolViewModel.descriptionText,
+                        imageRes = R.drawable.project1
+                    )
+                    onNavigateToPro()
+                },
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(50.dp),
