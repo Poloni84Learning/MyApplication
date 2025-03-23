@@ -26,10 +26,16 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.myapplication.models.ToolViewModel
 
 import kotlin.random.Random
-
+import com.example.myapplication.models.JsonFileManager
+import androidx.compose.ui.platform.LocalContext
+import com.example.myapplication.models.ToolViewModelFactory
 @Composable
 fun AudioRecorderTool(onPowerClick: () -> Unit,
-                      viewModel: ToolViewModel = viewModel()) {
+                      viewModel: ToolViewModel = viewModel(
+                          factory = ToolViewModelFactory(
+                              jsonFileManager = JsonFileManager(LocalContext.current)
+                          )
+                      )) {
     var isRecording by remember { mutableStateOf(false) }
     var isPlaying by remember { mutableStateOf(false) }
 

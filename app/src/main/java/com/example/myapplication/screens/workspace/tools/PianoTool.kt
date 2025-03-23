@@ -23,9 +23,17 @@ import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.ui.input.pointer.pointerInput
 import com.example.myapplication.models.ToolViewModel
 
+import com.example.myapplication.models.JsonFileManager
+import androidx.compose.ui.platform.LocalContext
+import com.example.myapplication.models.ToolViewModelFactory
+
 @Composable
 fun PianoTool(onPowerClick: () ->  Unit,
-              viewModel: ToolViewModel = viewModel()) {
+              viewModel: ToolViewModel = viewModel(
+                  factory = ToolViewModelFactory(
+                      jsonFileManager = JsonFileManager(LocalContext.current)
+                  )
+              )) {
     Column(
         modifier = Modifier
             .fillMaxSize()

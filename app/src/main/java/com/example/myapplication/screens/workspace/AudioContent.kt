@@ -16,10 +16,16 @@ import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.myapplication.models.ToolViewModel
-
+import com.example.myapplication.models.JsonFileManager
+import androidx.compose.ui.platform.LocalContext
+import com.example.myapplication.models.ToolViewModelFactory
 
 @Composable
-fun AudioContent(viewModel: ToolViewModel = viewModel()) {
+fun AudioContent(viewModel: ToolViewModel = viewModel(
+    factory = ToolViewModelFactory(
+        jsonFileManager = JsonFileManager(LocalContext.current)
+    )
+)) {
     Column(modifier = Modifier
         .fillMaxWidth()
         .padding(0.dp)) {
