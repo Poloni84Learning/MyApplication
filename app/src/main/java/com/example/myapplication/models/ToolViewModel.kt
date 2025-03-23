@@ -1,10 +1,13 @@
 package com.example.myapplication.models
 
+
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import com.example.myapplication.screens.workspace.tools.ToolType
+import com.example.myapplication.R
+import java.util.UUID
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -16,14 +19,27 @@ import kotlinx.coroutines.delay
 
 
 class ToolViewModel(private val jsonFileManager: JsonFileManager) : ViewModel() {
-    var isTimerRunning by mutableStateOf(false)
-    var elapsedTime by mutableStateOf(0L)
-    var currentRecording by mutableStateOf(listOf<Pair<String, Pair<Long, Long>>>())
+
     var recordings by mutableStateOf(listOf<Pair<String, Pair<List<Pair<String, Pair<Long, Long>>>, Long>>>())
         private set
 
-    var projects by mutableStateOf(listOf<Project>())
+    var projects by mutableStateOf<List<Project>>(emptyList())
         private set
+    var currentProject by mutableStateOf<Project?>(null)
+        private set
+
+    var lyricsText by mutableStateOf("")
+        private set
+    var titleText by mutableStateOf("")
+        private set
+    var descriptionText by mutableStateOf("")
+        private set
+
+
+
+    var isTimerRunning by mutableStateOf(false)
+    var elapsedTime by mutableStateOf(0L)
+    var currentRecording by mutableStateOf(listOf<Pair<String, Pair<Long, Long>>>())
 
     private var trackCounter1 by mutableStateOf(1)
     private var trackCounter2 by mutableStateOf(1)
@@ -35,50 +51,97 @@ class ToolViewModel(private val jsonFileManager: JsonFileManager) : ViewModel() 
     private var timerJob: Job? = null
     private val keyDownTimes = mutableMapOf<String, Long>()
 
-    var lyricsText by mutableStateOf("")
-        private set
-    var titleText by mutableStateOf("")
-        private set
-    var descriptionText by mutableStateOf("")
-        private set
+
 
 
     init {
         loadData()
     }
 
-    fun addProject(title: String, description: String, imageRes: Int) {
-        val newProject = Project(
-            id = (projects.size + 1).toString(), // Tạo ID tự động
-            name = title,
-            completionTime = "Just now", // Thời gian tạo dự án
-            imageRes = imageRes
+    private fun loadData() {
+        val userData = jsonFileManager.loadData()
+        if (userData != null) {
+            projects = userData.projects
+            }else {
+            projects = emptyList() // Đảm bảo projects không bao giờ là null
+        }
+
+    }
+    fun createNewProject() {
+        currentProject = Project(
+            id = UUID.randomUUID().toString(),
+            title = "",
+            lyrics = "",
+            description = "",
+            imageRes = R.drawable.project1,
+            completionTime = "",
+            recordings = emptyList()
         )
-        projects = projects + newProject
     }
 
-    private fun loadData() {
-        viewModelScope.launch {
-            val userData = jsonFileManager.loadData()
-            if (userData != null) {
-                recordings = userData.recordings
-                lyricsText = userData.lyricsText
-                titleText = userData.titleText
-                descriptionText = userData.descriptionText
+    fun loadProject(projectId: String) {
+        if (projects.isNullOrEmpty()) {
+            currentProject = null
+            recordings = emptyList()
+        } else {
+            currentProject = projects.find { it.id == projectId }
+            currentProject?.let {
+                recordings = it.recordings
             }
         }
     }
 
-    fun saveData() {
-        viewModelScope.launch {
-            val userData = UserData(
-                recordings = recordings,
-                lyricsText = lyricsText,
-                titleText = titleText,
-                descriptionText = descriptionText
-            )
-            jsonFileManager.saveData(userData)
+
+    fun updateProject(
+        title: String,
+        lyrics: String,
+        description: String,
+        imageRes: Int,
+        completionTime: String,
+        recordings: List<Pair<String, Pair<List<Pair<String, Pair<Long, Long>>>, Long>>>
+    ) {
+        if (projects.isNullOrEmpty()) {
+            return
         }
+        currentProject = currentProject?.copy(
+            title = title,
+            lyrics = lyrics,
+            description = description,
+            imageRes = imageRes,
+            completionTime = completionTime,
+            recordings = recordings
+        )
+        currentProject?.let { project ->
+            projects = projects.filterNot { it.id == project.id } + project
+            saveUserData()
+        }
+    }
+
+
+    fun addProject(
+        title: String,
+        lyrics: String,
+        description: String,
+        imageRes: Int,
+        completionTime: String,
+        recordings: List<Pair<String, Pair<List<Pair<String, Pair<Long, Long>>>, Long>>>
+    ) {
+        val newProject = Project(
+            id = UUID.randomUUID().toString(),
+            title = title,
+            lyrics = lyrics,
+            description = description,
+            imageRes = imageRes,
+            completionTime = completionTime,
+            recordings = recordings
+        )
+        projects = projects + newProject
+        saveUserData()
+    }
+
+    private fun saveUserData() {
+        val userData = UserData(projects = projects)
+        jsonFileManager.saveData(userData)
     }
 
 
@@ -118,7 +181,7 @@ class ToolViewModel(private val jsonFileManager: JsonFileManager) : ViewModel() 
         }
 
         recordings = recordings + (trackName to (currentRecording to sessionDuration))
-        saveData()
+        saveUserData()
         when (currentToolType) {
             ToolType.AUDIO -> trackCounter2++
             ToolType.PIANO -> trackCounter1++
@@ -170,16 +233,23 @@ class ToolViewModel(private val jsonFileManager: JsonFileManager) : ViewModel() 
     }
 
     fun reset() {
-        currentRecording = emptyList()
-        elapsedTime = 0L
-        keyDownTimes.clear()
+        titleText = ""
+        descriptionText = ""
+        lyricsText = ""
+        currentProject = null
+        recordings = emptyList()
+
     }
 
+    fun deleteProject(projectId: String) {
+        projects = projects.filterNot { it.id == projectId }
+        saveUserData()
+    }
 
 
     fun updateLyrics(newText: String) {
         lyricsText = newText
-        saveData()
+        saveUserData()
     }
 
     fun clearLyrics() {
@@ -190,7 +260,7 @@ class ToolViewModel(private val jsonFileManager: JsonFileManager) : ViewModel() 
 
     fun updateTitle(newText: String) {
         titleText = newText
-        saveData()
+        saveUserData()
     }
 
     fun clearTitle() {
@@ -199,7 +269,7 @@ class ToolViewModel(private val jsonFileManager: JsonFileManager) : ViewModel() 
 
     fun updateDescription(newText: String) {
         descriptionText = newText
-        saveData()
+        saveUserData()
     }
 
     fun clearDescription() {
