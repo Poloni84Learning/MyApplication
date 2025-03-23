@@ -25,14 +25,21 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.ui.platform.LocalContext
 import com.example.myapplication.models.ChordViewModel
+import com.example.myapplication.models.JsonFileManager
 import com.example.myapplication.models.ToolViewModel
+import com.example.myapplication.models.ToolViewModelFactory
 
 
 @Composable
 fun ImportTrackTool(onPowerClick: () ->  Unit,
                     chordViewModel: ChordViewModel = viewModel(),
-                    toolViewModel: ToolViewModel = viewModel()) {
+                    toolViewModel: ToolViewModel = viewModel(
+                        factory = ToolViewModelFactory(
+                            jsonFileManager = JsonFileManager(LocalContext.current)
+                        )
+                    )) {
     val chords by chordViewModel.chords.observeAsState()
     val error by chordViewModel.error.observeAsState()
     var selectedNotes by remember { mutableStateOf<List<String>>(emptyList()) }
@@ -111,8 +118,7 @@ fun ImportTrackTool(onPowerClick: () ->  Unit,
                         chordDetailMap.values.filter { it.name in chordNotes }.flatMap { it.notes }
                     }
                     toolViewModel.onChordUp(allChordNotes)
-                },
-                selectedNotes = selectedNotes
+                }
             )
 
         }else {
@@ -137,22 +143,24 @@ fun ImportTrackTool(onPowerClick: () ->  Unit,
 fun NoteButton(
     note: String,
     onChordDown: (List<String>) -> Unit,
-    onChordUp: (List<String>) -> Unit,
-    isSelected: Boolean
+    onChordUp: (List<String>) -> Unit
 ) {
+    var isPressed by remember { mutableStateOf(false) }
     Box(
         modifier = Modifier
             .size(60.dp)
             .background(
-                color = if (isSelected) Color.Gray else Color.White,
+                color = if (isPressed) Color.Gray else Color.White,
                 shape = RoundedCornerShape(8.dp)
             )
             .pointerInput(Unit) {
                 detectTapGestures(
                     onPress = {
+                        isPressed = true
                         onChordDown(listOf(note))
                         tryAwaitRelease()
                         onChordUp(listOf(note))
+                        isPressed = false
                     }
                 )
             }
@@ -172,8 +180,7 @@ fun NoteButton(
 fun NoteMatrix(
     notes: List<String>,
     onChordDown: (List<String>) -> Unit,
-    onChordUp: (List<String>) -> Unit,
-    selectedNotes: List<String>
+    onChordUp: (List<String>) -> Unit
 ) {
     LazyVerticalGrid(
         columns = GridCells.Fixed(4),
@@ -190,7 +197,6 @@ fun NoteMatrix(
                 note = note,
                 onChordDown = onChordDown,
                 onChordUp = onChordUp,
-                isSelected = selectedNotes.contains(note)
             )
         }
     }
