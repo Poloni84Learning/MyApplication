@@ -25,6 +25,8 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.runtime.livedata.observeAsState
+import com.example.myapplication.models.ChordViewModel
+import com.example.myapplication.models.ToolViewModel
 
 
 @Composable

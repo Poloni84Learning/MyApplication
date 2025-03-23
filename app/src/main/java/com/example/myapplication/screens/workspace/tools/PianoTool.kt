@@ -21,6 +21,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.*
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.ui.input.pointer.pointerInput
+import com.example.myapplication.models.ToolViewModel
 
 @Composable
 fun PianoTool(onPowerClick: () ->  Unit,
