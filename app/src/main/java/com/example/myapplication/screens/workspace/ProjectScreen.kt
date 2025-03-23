@@ -9,6 +9,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.ArrowUpward
 import androidx.compose.material.icons.filled.ArrowDownward
@@ -20,14 +21,25 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.myapplication.R
+import com.example.myapplication.models.JsonFileManager
+import com.example.myapplication.models.ToolViewModel
+import com.example.myapplication.models.ToolViewModelFactory
 
 @Composable
-fun ProjectScreen(onNavigateToWorkSpace: () -> Unit) {
+fun ProjectScreen(onNavigateToWorkSpace: (projectId: String?) -> Unit,
+                  toolViewModel: ToolViewModel = viewModel(
+                      factory = ToolViewModelFactory(
+                          jsonFileManager = JsonFileManager(LocalContext.current) // Khởi tạo JsonFileManager
+                      )
+                  )
+) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -112,11 +124,15 @@ fun ProjectScreen(onNavigateToWorkSpace: () -> Unit) {
                 }
                 Spacer(modifier = Modifier.width(8.dp))
                 Button(
-                    onClick = onNavigateToWorkSpace,
+                    onClick = { onNavigateToWorkSpace(null) },
 
                 ) {
 
-                    Text("+")
+                    Icon(
+                        imageVector = Icons.Default.Add,
+                        contentDescription = "Add",
+                        tint = Color.White
+                    )
                     Spacer(modifier = Modifier.width(4.dp))
                     Text("New")
                 }
@@ -126,29 +142,32 @@ fun ProjectScreen(onNavigateToWorkSpace: () -> Unit) {
         Spacer(modifier = Modifier.height(16.dp))
 
 
-        val projects = listOf(
-            Project("Project 1", "6 days ago", R.drawable.project1),
-            Project("Project 2", "3 days ago", R.drawable.project2),
-            Project("Project 3", "1 day ago", R.drawable.project3)
-        )
+        val projects = toolViewModel.projects
 
         LazyColumn {
             items(projects) { project ->
-                ProjectItem(project)
+                ProjectItem(
+                    project = project,
+                    onClick = { onNavigateToWorkSpace(project.id) }
+                )
             }
         }
     }
 }
 
 @Composable
-fun ProjectItem(project: Project) {
+fun ProjectItem(
+    project: Project,
+    onClick: () -> Unit // Thêm tham số onClick
+) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(vertical = 8.dp),
+            .padding(vertical = 8.dp)
+            .clickable { onClick() }, // Thêm sự kiện onClick
         verticalAlignment = Alignment.CenterVertically
     ) {
-
+        // Phần hiển thị thông tin dự án
         Image(
             painter = painterResource(id = project.imageRes),
             contentDescription = "Project Image",
@@ -160,7 +179,6 @@ fun ProjectItem(project: Project) {
         )
 
         Spacer(modifier = Modifier.width(16.dp))
-
 
         Column(
             modifier = Modifier.weight(1f)
@@ -177,9 +195,8 @@ fun ProjectItem(project: Project) {
             )
         }
 
-
         IconButton(
-            onClick = {  },
+            onClick = { },
             modifier = Modifier.size(24.dp)
         ) {
             Icon(
@@ -191,6 +208,7 @@ fun ProjectItem(project: Project) {
 }
 
 data class Project(
+    val id: String,
     val name: String,
     val completionTime: String,
     val imageRes: Int
