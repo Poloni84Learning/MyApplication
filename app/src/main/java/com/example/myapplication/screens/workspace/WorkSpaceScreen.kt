@@ -31,13 +31,15 @@ import com.example.myapplication.screens.workspace.tools.PianoTool
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.myapplication.screens.workspace.tools.BassTool
 import com.example.myapplication.screens.workspace.tools.ImportTrackTool
-import com.example.myapplication.screens.workspace.tools.ToolViewModel
+import com.example.myapplication.models.ToolViewModel
 import com.example.myapplication.screens.workspace.tools.ToolType
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun WorkSpaceScreen(onNavigateSave: ()-> Unit,
+fun WorkSpaceScreen(projectId: String?,
+                    onNavigateSave: ()-> Unit,
                     toolViewModel: ToolViewModel = viewModel()
+
 ) {
     var selectedTab by remember { mutableStateOf("Audio") }
     var showMenu by remember { mutableStateOf(false) }
