@@ -66,7 +66,6 @@ fun WorkSpaceScreen(projectId: String?,
     var showPiano by remember { mutableStateOf(false) }
     val sheetState = rememberModalBottomSheetState()
 
-
     Column(
         modifier = Modifier
             .fillMaxSize()

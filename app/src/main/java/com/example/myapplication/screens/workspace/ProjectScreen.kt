@@ -227,7 +227,6 @@ fun ProjectItem(
                         showOption = false
                     }
                 )
-
                 DropdownMenuItem(
                     text = { Text("Delete") },
                     onClick = {

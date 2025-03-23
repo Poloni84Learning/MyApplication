@@ -108,7 +108,6 @@ fun SaveProjectScreen(
                         fontWeight = FontWeight.Bold
                     )
                 )
-
                 TextField(
                     value = toolViewModel.descriptionText,
                     onValueChange = { toolViewModel.updateDescription(it) },
