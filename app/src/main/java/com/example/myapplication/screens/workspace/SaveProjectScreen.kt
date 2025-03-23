@@ -34,6 +34,7 @@ fun SaveProjectScreen(
     )
 ) {
 
+
     Box(modifier = Modifier
         .fillMaxSize()
         .padding(16.dp))
@@ -129,14 +130,32 @@ fun SaveProjectScreen(
                 )
             }
 
-            
+
             Button(
                 onClick = {
-                    toolViewModel.addProject(
-                        title = toolViewModel.titleText,
-                        description = toolViewModel.descriptionText,
-                        imageRes = R.drawable.project1
-                    )
+                    if (toolViewModel.currentProject != null) {
+
+                        toolViewModel.updateProject(
+
+                            title = toolViewModel.titleText,
+                            description = toolViewModel.descriptionText,
+                            lyrics = toolViewModel.lyricsText,
+                            recordings = toolViewModel.recordings,
+                            completionTime = "Today",
+                            imageRes = R.drawable.project1,
+
+                        )
+                    } else {
+
+                        toolViewModel.addProject(
+                            title = toolViewModel.titleText,
+                            description = toolViewModel.descriptionText,
+                            lyrics = toolViewModel.lyricsText,
+                            recordings = toolViewModel.recordings,
+                            imageRes = R.drawable.project1,
+                            completionTime = "Now"
+                        )
+                    }
                     onNavigateToPro()
                 },
                 modifier = Modifier

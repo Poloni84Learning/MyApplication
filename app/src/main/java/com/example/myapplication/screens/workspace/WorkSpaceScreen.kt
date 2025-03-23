@@ -26,21 +26,37 @@ import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.rememberModalBottomSheetState
+import androidx.compose.ui.platform.LocalContext
 import com.example.myapplication.screens.workspace.tools.AudioRecorderTool
 import com.example.myapplication.screens.workspace.tools.PianoTool
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.myapplication.models.JsonFileManager
 import com.example.myapplication.screens.workspace.tools.BassTool
 import com.example.myapplication.screens.workspace.tools.ImportTrackTool
 import com.example.myapplication.models.ToolViewModel
+import com.example.myapplication.models.ToolViewModelFactory
 import com.example.myapplication.screens.workspace.tools.ToolType
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun WorkSpaceScreen(projectId: String?,
+                    onNavigateBack: () -> Unit,
                     onNavigateSave: ()-> Unit,
-                    toolViewModel: ToolViewModel = viewModel()
+                    toolViewModel: ToolViewModel = viewModel(
+                        factory = ToolViewModelFactory(
+                            jsonFileManager = JsonFileManager(LocalContext.current)
+                        )
+                    )
 
 ) {
+    LaunchedEffect(projectId) {
+        if (projectId == null) {
+            toolViewModel.reset()
+            toolViewModel.createNewProject()
+        } else {
+            toolViewModel.loadProject(projectId)
+        }
+    }
     var selectedTab by remember { mutableStateOf("Audio") }
     var showMenu by remember { mutableStateOf(false) }
 
@@ -49,6 +65,7 @@ fun WorkSpaceScreen(projectId: String?,
     var showAudioRecorder by remember { mutableStateOf(false) }
     var showPiano by remember { mutableStateOf(false) }
     val sheetState = rememberModalBottomSheetState()
+
 
     Column(
         modifier = Modifier
@@ -66,7 +83,7 @@ fun WorkSpaceScreen(projectId: String?,
             Spacer(modifier = Modifier.width(8.dp))
 
             IconButton(
-                onClick = { },
+                onClick = { onNavigateBack()},
                 modifier = Modifier.size(24.dp)
             ) {
                 Icon(
@@ -149,7 +166,7 @@ fun WorkSpaceScreen(projectId: String?,
                 showAudioRecorder -> AudioRecorderTool(onPowerClick = { showAudioRecorder = false },viewModel = toolViewModel)
                 showPiano -> PianoTool(onPowerClick = { showPiano = false },viewModel = toolViewModel)
                 showBass -> BassTool()
-                showImportTrack -> ImportTrackTool(onPowerClick = { showImportTrack = false })
+                showImportTrack -> ImportTrackTool(onPowerClick = { showImportTrack = false }, toolViewModel = toolViewModel)
                 selectedTab == "Audio" -> AudioContent(viewModel = toolViewModel)
 
                 else -> {

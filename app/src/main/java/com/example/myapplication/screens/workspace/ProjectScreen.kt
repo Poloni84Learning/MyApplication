@@ -16,6 +16,10 @@ import androidx.compose.material.icons.filled.ArrowDownward
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -36,10 +40,12 @@ import com.example.myapplication.models.ToolViewModelFactory
 fun ProjectScreen(onNavigateToWorkSpace: (projectId: String?) -> Unit,
                   toolViewModel: ToolViewModel = viewModel(
                       factory = ToolViewModelFactory(
-                          jsonFileManager = JsonFileManager(LocalContext.current) // Khởi tạo JsonFileManager
+                          jsonFileManager = JsonFileManager(LocalContext.current)
                       )
                   )
 ) {
+
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -124,7 +130,9 @@ fun ProjectScreen(onNavigateToWorkSpace: (projectId: String?) -> Unit,
                 }
                 Spacer(modifier = Modifier.width(8.dp))
                 Button(
-                    onClick = { onNavigateToWorkSpace(null) },
+                    onClick = {
+                        toolViewModel.reset()
+                        onNavigateToWorkSpace(null)},
 
                 ) {
 
@@ -145,12 +153,16 @@ fun ProjectScreen(onNavigateToWorkSpace: (projectId: String?) -> Unit,
         val projects = toolViewModel.projects
 
         LazyColumn {
+            if (!projects.isNullOrEmpty()){
             items(projects) { project ->
                 ProjectItem(
                     project = project,
-                    onClick = { onNavigateToWorkSpace(project.id) }
+                    onClick = { onNavigateToWorkSpace(project.id) },
+                    onDelete = { projectId ->
+                        toolViewModel.deleteProject(projectId)
+                    }
                 )
-            }
+            }}
         }
     }
 }
@@ -158,16 +170,17 @@ fun ProjectScreen(onNavigateToWorkSpace: (projectId: String?) -> Unit,
 @Composable
 fun ProjectItem(
     project: Project,
-    onClick: () -> Unit // Thêm tham số onClick
+    onClick: () -> Unit,
+    onDelete: (String) -> Unit
 ) {
+    var showOption by remember { mutableStateOf(false) }
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .padding(vertical = 8.dp)
-            .clickable { onClick() }, // Thêm sự kiện onClick
+            .clickable { onClick() },
         verticalAlignment = Alignment.CenterVertically
     ) {
-        // Phần hiển thị thông tin dự án
         Image(
             painter = painterResource(id = project.imageRes),
             contentDescription = "Project Image",
@@ -184,7 +197,7 @@ fun ProjectItem(
             modifier = Modifier.weight(1f)
         ) {
             Text(
-                text = project.name,
+                text = project.title,
                 fontSize = 16.sp,
                 fontWeight = FontWeight.Bold
             )
@@ -196,20 +209,43 @@ fun ProjectItem(
         }
 
         IconButton(
-            onClick = { },
+            onClick = {showOption = true },
             modifier = Modifier.size(24.dp)
         ) {
             Icon(
                 imageVector = Icons.Default.MoreVert,
                 contentDescription = "More Options"
             )
+            DropdownMenu(
+                expanded = showOption,
+                onDismissRequest = { showOption = false }
+            ) {
+
+                DropdownMenuItem(
+                    text = { Text("Share") },
+                    onClick = {
+                        showOption = false
+                    }
+                )
+
+                DropdownMenuItem(
+                    text = { Text("Delete") },
+                    onClick = {
+                        onDelete(project.id)
+                        showOption = false
+                    }
+                )
+            }
         }
     }
 }
 
 data class Project(
-    val id: String,
-    val name: String,
-    val completionTime: String,
-    val imageRes: Int
+    val id: String ,
+    val title: String ,
+    val lyrics: String,
+    val description: String ,
+    val imageRes: Int ,
+    val completionTime: String ,
+    val recordings: List<Pair<String, Pair<List<Pair<String, Pair<Long, Long>>>, Long>>>
 )
