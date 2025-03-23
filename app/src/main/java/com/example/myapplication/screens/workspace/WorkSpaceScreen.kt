@@ -29,17 +29,21 @@ import androidx.compose.material3.rememberModalBottomSheetState
 import com.example.myapplication.screens.workspace.tools.AudioRecorderTool
 import com.example.myapplication.screens.workspace.tools.PianoTool
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.myapplication.screens.workspace.tools.PianoToolViewModel
-
+import com.example.myapplication.screens.workspace.tools.BassTool
+import com.example.myapplication.screens.workspace.tools.ImportTrackTool
+import com.example.myapplication.screens.workspace.tools.ToolViewModel
+import com.example.myapplication.screens.workspace.tools.ToolType
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun WorkSpaceScreen(onNavigateSave: ()-> Unit,
-                    viewModel: PianoToolViewModel = viewModel(),
-                    lyricsViewModel: LyricsViewModel = viewModel()
+                    toolViewModel: ToolViewModel = viewModel()
 ) {
     var selectedTab by remember { mutableStateOf("Audio") }
     var showMenu by remember { mutableStateOf(false) }
+
+    var showBass by remember { mutableStateOf(false) }
+    var showImportTrack by remember { mutableStateOf(false) }
     var showAudioRecorder by remember { mutableStateOf(false) }
     var showPiano by remember { mutableStateOf(false) }
     val sheetState = rememberModalBottomSheetState()
@@ -140,9 +144,12 @@ fun WorkSpaceScreen(onNavigateSave: ()-> Unit,
             contentAlignment = Alignment.Center
         ) {
             when {
-                showAudioRecorder -> AudioRecorderTool(onPowerClick = { showAudioRecorder = false })
-                showPiano -> PianoTool(onPowerClick = { showPiano = false },viewModel = viewModel)
-                selectedTab == "Audio" -> AudioContent(viewModel = viewModel)
+                showAudioRecorder -> AudioRecorderTool(onPowerClick = { showAudioRecorder = false },viewModel = toolViewModel)
+                showPiano -> PianoTool(onPowerClick = { showPiano = false },viewModel = toolViewModel)
+                showBass -> BassTool()
+                showImportTrack -> ImportTrackTool(onPowerClick = { showImportTrack = false })
+                selectedTab == "Audio" -> AudioContent(viewModel = toolViewModel)
+
                 else -> {
                     Column(modifier = Modifier.fillMaxWidth()) {
                         Text(
@@ -154,8 +161,8 @@ fun WorkSpaceScreen(onNavigateSave: ()-> Unit,
                         Spacer(modifier = Modifier.height(8.dp))
 
                         TextField(
-                            value = lyricsViewModel.lyricsText,
-                            onValueChange = { lyricsViewModel.updateLyrics(it) },
+                            value = toolViewModel.lyricsText,
+                            onValueChange = { toolViewModel.updateLyrics(it) },
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .height(200.dp),
@@ -217,9 +224,12 @@ fun WorkSpaceScreen(onNavigateSave: ()-> Unit,
                             .size(24.dp)
                             .background(Color.Red, shape = MaterialTheme.shapes.medium)
                             .clickable {
-                                if (showPiano) { // Chỉ chạy thời gian nếu PianoTool đã được mở
-                                viewModel.toggleTimer()
-                            }
+                                if (showPiano) {
+                                    toolViewModel.toggleTimer(ToolType.PIANO)}
+                                else if (showAudioRecorder) {
+                                    toolViewModel.toggleTimer(ToolType.AUDIO)
+                                }else if (showImportTrack){
+                                    toolViewModel.toggleTimer(ToolType.CHORD)}
                             }
                     )
 
@@ -253,17 +263,42 @@ fun WorkSpaceScreen(onNavigateSave: ()-> Unit,
                     .fillMaxWidth()
                     .heightIn(max = 600.dp)
             ) {
-                // Nội dung của BottomSheet
+
                 MenuOptions(onOptionSelected = { option ->
                     when (option) {
+
                         "Voice" -> {
                             showAudioRecorder = true
+                            toolViewModel.resetTimer()
+
                             showPiano = false
+                            showBass = false
+                            showImportTrack = false
+
                         }
                         "Piano" -> {
                             showPiano = true
-                            viewModel.resetTimer()
+                            toolViewModel.resetTimer()
+
                             showAudioRecorder = false
+                            showBass = false
+                            showImportTrack = false
+                        }
+                        "Bass" -> {
+                            showBass = true
+                            showPiano = false
+                            showAudioRecorder = false
+                            showImportTrack = false
+
+                        }
+                        "Import Chords" -> {
+                            showImportTrack = true
+                            toolViewModel.resetTimer()
+
+                            showPiano = false
+                            showBass = false
+                            showAudioRecorder = false
+
                         }
                         else -> {
 
@@ -279,7 +314,7 @@ fun WorkSpaceScreen(onNavigateSave: ()-> Unit,
 
 @Composable
 fun MenuOptions(onOptionSelected: (String) -> Unit) {
-    val options = listOf("Voice", "Piano", "Drum", "Bass")
+    val options = listOf("Voice", "Piano", "Bass", "Import Chords")
 
     LazyColumn(
         modifier = Modifier
@@ -300,3 +335,4 @@ fun MenuOptions(onOptionSelected: (String) -> Unit) {
         }
     }
 }
+
