@@ -125,5 +125,27 @@ class ToolViewModel : ViewModel() {
         lyricsText = ""
     }
 
+    var titleText by mutableStateOf("")
+        private set
+
+    fun updateTitle(newText: String) {
+        titleText = newText
+    }
+
+    fun clearTitle() {
+        titleText = ""
+    }
+
+    var descriptionText by mutableStateOf("")
+        private set
+
+    fun updateDescription(newText: String) {
+        descriptionText = newText
+    }
+
+    fun clearDescription() {
+        descriptionText = ""
+    }
+
 
 }

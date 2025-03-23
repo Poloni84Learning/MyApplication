@@ -16,12 +16,14 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.foundation.background
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.myapplication.R
+import com.example.myapplication.screens.workspace.tools.ToolViewModel
 
 @Composable
-fun SaveProjectScreen(onNavigateBack: () -> Unit) {
-    var title by remember { mutableStateOf("") }
-    var description by remember { mutableStateOf("") }
+fun SaveProjectScreen(onNavigateBack: () -> Unit,
+                      toolViewModel: ToolViewModel = viewModel() ) {
+
     Box(modifier = Modifier
         .fillMaxSize()
         .padding(16.dp))
@@ -79,8 +81,8 @@ fun SaveProjectScreen(onNavigateBack: () -> Unit) {
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 TextField(
-                    value = title,
-                    onValueChange = { title = it },
+                    value = toolViewModel.titleText,
+                    onValueChange = { toolViewModel.updateTitle(it) },
                     modifier = Modifier.fillMaxWidth(),
                     placeholder = {
                         Text(
@@ -97,8 +99,8 @@ fun SaveProjectScreen(onNavigateBack: () -> Unit) {
                 )
 
                 TextField(
-                    value = description,
-                    onValueChange = { description = it },
+                    value = toolViewModel.descriptionText,
+                    onValueChange = { toolViewModel.updateDescription(it) },
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(150.dp),
