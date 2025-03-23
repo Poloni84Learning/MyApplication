@@ -63,7 +63,7 @@ class ToolViewModel(private val jsonFileManager: JsonFileManager) : ViewModel() 
         if (userData != null) {
             projects = userData.projects
             }else {
-            projects = emptyList() // Đảm bảo projects không bao giờ là null
+            projects = emptyList()
         }
 
     }
