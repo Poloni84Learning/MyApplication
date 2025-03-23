@@ -15,11 +15,11 @@ import androidx.compose.ui.unit.sp
 import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.myapplication.screens.workspace.tools.PianoToolViewModel
+import com.example.myapplication.screens.workspace.tools.ToolViewModel
 
 
 @Composable
-fun AudioContent(viewModel: PianoToolViewModel = viewModel()) {
+fun AudioContent(viewModel: ToolViewModel = viewModel()) {
     Column(modifier = Modifier
         .fillMaxWidth()
         .padding(0.dp)) {
@@ -70,12 +70,15 @@ fun AudioContent(viewModel: PianoToolViewModel = viewModel()) {
 
 
                     TrackLabelRight(sessionDuration = sessionDuration, recording = notes)
-                    Log.d("Au","session: $sessionDuration")
-                    val lastNote = notes.last()
-                    val (noteName, info) = lastNote
-                    val (startTime, duration) = info
-                    val spacing2 = ((sessionDuration - duration - startTime)/ 40).toFloat().dp
-                    Spacer(modifier = Modifier.width(spacing2))
+                    Log.d("Track","session: $sessionDuration")
+                    if (notes.isNotEmpty())
+                    {
+                        val lastNote = notes.last()
+                        val (noteName, info) = lastNote
+                        val (startTime, duration) = info
+                        val spacing2 = ((sessionDuration - duration - startTime)/ 40).toFloat().dp
+                        Spacer(modifier = Modifier.width(spacing2))
+                    }
                 }
 
             }
@@ -123,10 +126,10 @@ fun TrackLabelRight(sessionDuration: Long, recording: List<Pair<String, Pair<Lon
                                 .height(5.dp)
                                 .fillMaxWidth()
                                 .padding(0.dp)
-                                .offset(y = (notePosition*8).dp)
+                                .offset(y = (notePosition*8/10).toFloat().dp)
                                 .background(color = if (note.contains("#")) Color.DarkGray else Color.White)
                         ) {
-                            Log.d("Au","note: $note, startTime: $startTime, noteDuration: $noteDuration, pre: $previousTimestamp")
+                            Log.d("Note","note: $note, startTime: $startTime, noteDuration: $noteDuration, pre: $previousTimestamp")
                         }
                     }
 
@@ -207,17 +210,17 @@ fun TrackLabelLeft(name: String, volume: Float) {
 fun getNotePosition(note: String): Int {
     return when (note) {
         "C" -> 0
-        "C#" -> 0
-        "D" -> 1
-        "D#" -> 1
-        "E" -> 2
-        "F" -> 3
-        "F#" -> 3
-        "G" -> 4
-        "G#" -> 4
-        "A" -> 5
-        "A#" -> 5
-        "B" -> 6
+        "C#", "Db" -> 5
+        "D" -> 10
+        "D#", "Eb" -> 15
+        "E" -> 20
+        "F" -> 30
+        "F#", "Gb" -> 35
+        "G" -> 40
+        "G#", "Ab" -> 45
+        "A" -> 50
+        "A#", "Bb" -> 55
+        "B" -> 60
         else -> 0
     }
 }
