@@ -1,10 +1,15 @@
 package com.example.myapplication
 
-import android.os.WorkDuration
+
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.platform.LocalContext
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.example.myapplication.models.JsonFileManager
+import com.example.myapplication.models.ToolViewModel
+import com.example.myapplication.models.ToolViewModelFactory
 import com.example.myapplication.screens.loginandregister.ForgotPasswordScreen
 import com.example.myapplication.screens.loginandregister.LoginScreen
 import com.example.myapplication.screens.loginandregister.NewPasswordScreen
@@ -17,10 +22,16 @@ import com.example.myapplication.screens.workspace.WorkSpaceScreen
 @Composable
 fun AppNavigation() {
     val navController = rememberNavController()
-
+    val context = LocalContext.current
+    val toolViewModel: ToolViewModel = viewModel(
+        factory = ToolViewModelFactory(
+            jsonFileManager = JsonFileManager(context)
+        )
+    )
     NavHost(
         navController = navController,
-        startDestination = "workspace"
+        startDestination = "project"
+
     ) {
 
         composable("welcome") {
@@ -90,17 +101,25 @@ fun AppNavigation() {
         }
         composable("project") {
             ProjectScreen(
-                onNavigateToWorkSpace = {
-                    navController.navigate("workspace")
-                }
+                onNavigateToWorkSpace = { projectId ->
+                    if (projectId == null) {
+                        navController.navigate("workspace/new")
+                    } else {
+                        navController.navigate("workspace/$projectId")
+                    }
+                },
+                toolViewModel = toolViewModel
             )
         }
 
-        composable("workspace") {
+        composable("workspace/{projectId}") { backStackEntry ->
+            val projectId = backStackEntry.arguments?.getString("projectId")
             WorkSpaceScreen(
+                projectId = projectId,
                 onNavigateSave = {
                     navController.navigate("save")
-                }
+                },
+                toolViewModel = toolViewModel
             )
         }
 
@@ -111,7 +130,11 @@ fun AppNavigation() {
                 onNavigateBack = {
                     navController.popBackStack()
 
-                }
+                },
+                onNavigateToPro = {
+                    navController.navigate("project")
+                },
+                toolViewModel = toolViewModel
             )
         }
     }
