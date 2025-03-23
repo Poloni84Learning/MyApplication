@@ -20,12 +20,11 @@ import androidx.compose.runtime.mutableStateOf
 
 import androidx.compose.runtime.*
 import androidx.compose.foundation.gestures.detectTapGestures
-import androidx.compose.foundation.gestures.waitForUpOrCancellation
 import androidx.compose.ui.input.pointer.pointerInput
 
 @Composable
 fun PianoTool(onPowerClick: () ->  Unit,
-              viewModel: PianoToolViewModel = viewModel()) {
+              viewModel: ToolViewModel = viewModel()) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -41,7 +40,7 @@ fun PianoTool(onPowerClick: () ->  Unit,
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
-                text = "Time: ${viewModel.elapsedTime / 1000}s",
+                text = "Time: ${formatTime(viewModel.elapsedTime.toInt())}s",
                 fontSize = 18.sp,
                 color = Color.White,
                 modifier = Modifier.padding(end = 16.dp)
@@ -223,4 +222,11 @@ fun PianoKey(
             modifier = Modifier.padding(bottom = 8.dp)
         )
     }
+}
+private fun formatTime(seconds: Int): String {
+    val minutes = seconds / 1000
+    val secs = seconds %1000
+    val secstr = secs.toString().take(2)
+    val secsint = secstr.toInt()
+    return String.format("%02d:%02d", minutes, secsint)
 }
