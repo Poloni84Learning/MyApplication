@@ -15,7 +15,7 @@ import androidx.compose.ui.unit.sp
 import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.myapplication.screens.workspace.tools.ToolViewModel
+import com.example.myapplication.models.ToolViewModel
 
 
 @Composable
