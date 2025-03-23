@@ -116,9 +116,13 @@ fun AppNavigation() {
             val projectId = backStackEntry.arguments?.getString("projectId")
             WorkSpaceScreen(
                 projectId = projectId,
+                onNavigateBack = {
+                    navController.popBackStack()
+                },
                 onNavigateSave = {
                     navController.navigate("save")
                 },
+
                 toolViewModel = toolViewModel
             )
         }
