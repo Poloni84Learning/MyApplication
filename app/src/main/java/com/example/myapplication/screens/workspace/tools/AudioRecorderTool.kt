@@ -22,14 +22,16 @@ import androidx.compose.material3.*
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.PathEffect
 import androidx.compose.ui.graphics.StrokeCap
+import androidx.lifecycle.viewmodel.compose.viewModel
 
 import kotlin.random.Random
 
 @Composable
-fun AudioRecorderTool(onPowerClick: () -> Unit) {
+fun AudioRecorderTool(onPowerClick: () -> Unit,
+                      viewModel: ToolViewModel = viewModel()) {
     var isRecording by remember { mutableStateOf(false) }
     var isPlaying by remember { mutableStateOf(false) }
-    var recordingTime by remember { mutableStateOf(0) }
+
     val waveformData = remember { generateWaveformData() }
 
     Column(
@@ -46,7 +48,7 @@ fun AudioRecorderTool(onPowerClick: () -> Unit) {
             horizontalArrangement = Arrangement.End
         ) {
             Text(
-                text = formatTime(recordingTime),
+                text = formatTime(viewModel.elapsedTime.toInt()),
                 fontSize = 24.sp,
                 fontWeight = FontWeight.Bold,
                 color = Color.White,
@@ -86,7 +88,7 @@ fun AudioRecorderTool(onPowerClick: () -> Unit) {
                     val x = index * (size.width / waveformData.size)
                     val y = size.height / 2 + amplitude * 50
                     drawLine(
-                        color = Color(0xFF00FF00), // Màu waveform
+                        color = Color(0xFF00FF00),
                         start = Offset(x, size.height / 2),
                         end = Offset(x, y),
                         strokeWidth = 2f,
@@ -144,12 +146,14 @@ fun AudioRecorderTool(onPowerClick: () -> Unit) {
 }
 
 private fun formatTime(seconds: Int): String {
-    val minutes = seconds / 60
-    val secs = seconds % 60
-    return String.format("%02d:%02d", minutes, secs)
+    val minutes = seconds / 1000
+    val secs = seconds %1000
+    val secstr = secs.toString().take(2)
+    val secsint = secstr.toInt()
+    return String.format("%02d:%02d", minutes, secsint)
 }
 
 
 private fun generateWaveformData(): List<Float> {
-    return List(100) { Random.nextFloat() - 0.5f }
+    return List(100) { Random.nextFloat() - 1f }
 }
